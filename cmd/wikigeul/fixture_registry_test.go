@@ -21,7 +21,7 @@ func fixtureRegistry(t *testing.T, root string, tags ...string) {
 		r, _ := core.EncodeBind(core.Bind{EdgeID: id, Subject: core.EncodeLocalRef(subj), Name: []byte(name)})
 		return enc(r)
 	}
-	docID, _ := core.EncodeDocID([]core.Word{0}, registryDoc)
+	docID, _ := core.EncodeDocID([]core.Word{0}, []core.Word{0, 0, 0, 0x0848})
 	in := slices.Concat(enc(core.EncodeSpecVersion(1)), enc(docID), []core.Word{0x180E},
 		enc(core.EncodeDeclare(core.Declare{EdgeID: 1, Target: 0x0848})),
 		enc(core.EncodeFieldDecl(core.FieldDecl{EdgeID: 2, Declare: 1, Width: 1})),

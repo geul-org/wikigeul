@@ -1,84 +1,34 @@
-//ff:func feature=cli type=command control=iteration dimension=1
-//ff:what parseFlags — the run config from command-line arguments; full porter and library commits are required
+//ff:func feature=cli type=command control=sequence
+//ff:what parseFlags — the run config from command-line arguments; the dump file and the porter and library commits are required
 package main
 
 import (
-	"errors"
 	"flag"
-	"fmt"
 
-	"github.com/geul-org/wikigeul/internal/port"
+	"github.com/geul-org/wikigeul/pkg/pipeline"
 )
 
-// parseFlags reads args into a config. -commit and -lib-commit (the full git
-// object IDs of the porter and the GEUL library, written in every document's
-// TRANSFORMED-BY) are required and must be well formed (port.CommitDigest).
-// -schema and -dump-id name the loaded dump (default wikidata, 1); -dump
-// reads a dump file instead (checkDumpFlags).
+// parseFlags reads args into a config: the flags every conversion run shares
+// (pipeline.BindFlags), then the dump file's (checkDumpFlags). Schema and
+// Dump keep the values the checkpoint identity has always held for a run
+// reading a dump (pipeline.Config).
 func parseFlags(args []string) (config, error) {
 	fs := flag.NewFlagSet("wikigeul", flag.ContinueOnError)
-	var c config
-	var dump int
-	fs.StringVar(&c.Root, "root", ".", "archive root holding .well-known/geul (geul-dev draft/geul-org/artifacts/geul)")
-	fs.Uint64Var(&c.From, "from", 1, "first QID number")
-	fs.Uint64Var(&c.To, "to", 1000, "last QID number")
-	fs.StringVar(&c.DSN, "dsn", "", "PostgreSQL DSN (empty: PG* environment variables)")
-	fs.StringVar(&c.Schema, "schema", "wikidata", "schema of the loaded dump (wikipg -schema)")
-	fs.IntVar(&dump, "dump-id", 1, "dump_id of the loaded dump (1..255)")
-	fs.StringVar(&c.Commit, "commit", "", "porter git commit, full ID (required)")
-	fs.StringVar(&c.LibCommit, "lib-commit", "", "GEUL library git commit, full ID (required)")
-	fs.StringVar(&c.Report, "report", "", "report TSV path (empty: none)")
-	fs.StringVar(&c.LangRoot, "langreg-root", "", "archive root to read the LANGUAGE-SHORT-CODE spec (GEUL Language Registry) from (empty: -root)")
-	fs.StringVar(&c.Out, "out", "pack", "output: pack (the Issuer's pack set, zstd, streamed) or dir (directory tree, for tests)")
-	fs.IntVar(&c.Workers, "workers", defaultWorkers(), "pack mode: conversion goroutines, each with its own database connection")
-	fs.StringVar(&c.IDs, "ids", "", "pack mode: file of entity IDs (Q…/P…, one per line) to convert instead of every property and the Q range")
-	fs.Int64Var(&c.Every, "checkpoint", 100000, "pack mode: documents between checkpoints")
-	fs.BoolVar(&c.Resume, "resume", false, "pack mode: continue the interrupted run in -root from its last checkpoint")
-	fs.Int64Var(&c.RecordedAt, "recorded-at", 0, "pack mode: RECORDED-AT of the version lists, Unix seconds (0: when the run starts)")
-	fs.IntVar(&c.Samples, "samples", 2048, "pack mode: documents the zstd dictionary is trained on (the first Q documents of the run)")
-	fs.BoolVar(&c.Strict, "strict", false, "pack mode: stop at the first anomaly (a skip or raw value outside the normal list, an error, a schema Fact) after a checkpoint, exit 3")
-	fs.StringVar(&c.Anomaly, "anomaly", "wikigeul-anomaly.tsv", "pack mode, -strict: where the anomaly report goes")
-	fs.Func("allow", "pack mode, -strict: also treat kind:reason as normal (skipped:…, raw:…, warn:<rule>); repeatable", func(v string) error {
-		c.Allow = append(c.Allow, v)
-		return nil
-	})
-	fs.StringVar(&c.DumpFile, "dump", "", "Wikidata JSON dump (.json, .json.gz, .json.bz2) to read directly instead of the database (pack mode)")
-	fs.StringVar(&c.DumpURL, "dump-url", "", "-dump: URL recorded as the dump's source (empty: dumps.wikimedia.org URL from the file name's date)")
-	fs.StringVar(&c.DumpSHA256, "dump-sha256", "", "-dump: the file's SHA-256 in hex (empty: from <file>.sha256); the file is checked against it")
-	fs.Int64Var(&c.DumpTime, "dump-time", 0, "-dump: when the file was downloaded, Unix seconds (0: its modification time)")
-	fs.StringVar(&c.SortDir, "sort-dir", "wikigeul-dumpsort", "-dump: directory of the sort into document key order and its checkpoints")
-	fs.Int64Var(&c.SortMem, "sort-mem", 1024, "-dump: MiB of entity JSON held per sorted run")
-	var langVer uint
-	fs.UintVar(&langVer, "langreg-version", 0, "version of the LANGUAGE-SHORT-CODE spec document to use (0: the newest when the run starts)")
+	c := config{Config: pipeline.Config{Schema: "wikidata", Dump: 1}}
+	check := pipeline.BindFlags(fs, &c.Config, defaultDumpWorkers(), "conversion goroutines, also the sort's decompressor and encoder threads")
+	fs.StringVar(&c.DumpFile, "dump", "", "Wikidata JSON dump to read: .json, .json.gz or .json.bz2 (required)")
+	fs.StringVar(&c.DumpURL, "dump-url", "", "URL recorded as the dump's source (empty: dumps.wikimedia.org URL from the file name's date)")
+	fs.StringVar(&c.DumpSHA256, "dump-sha256", "", "the file's SHA-256 in hex (empty: from <file>.sha256); the file is checked against it")
+	fs.Int64Var(&c.DumpTime, "dump-time", 0, "when the file was downloaded, Unix seconds (0: its modification time)")
+	fs.StringVar(&c.SortDir, "sort-dir", "wikigeul-dumpsort", "directory of the sort into document key order and its checkpoints")
+	fs.Int64Var(&c.SortMem, "sort-mem", 1024, "MiB of entity JSON held per sorted run")
 	if err := fs.Parse(args); err != nil {
 		return config{}, err
 	}
-	for _, id := range []string{c.Commit, c.LibCommit} {
-		if _, err := port.CommitDigest(id); err != nil {
-			return config{}, fmt.Errorf("-commit and -lib-commit: %w", err)
-		}
+	if err := check(); err != nil {
+		return config{}, err
 	}
-	if dump < 1 || dump > 255 {
-		return config{}, errors.New("wikigeul: need 1 <= -dump-id <= 255")
-	}
-	c.Dump = int16(dump)
-	if langVer > 0xFFFFFFFF {
-		return config{}, errors.New("wikigeul: -langreg-version is a 32-bit version ID")
-	}
-	c.LangVer = uint32(langVer)
-	if c.Out != "pack" && c.Out != "dir" {
-		return config{}, errors.New("wikigeul: -out is pack or dir")
-	}
-	if c.Workers < 1 || c.Every < 1 {
-		return config{}, errors.New("wikigeul: -workers and -checkpoint must be at least 1")
-	}
-	if c.LangRoot == "" {
-		c.LangRoot = c.Root
-	}
-	if c.From == 0 || c.From > c.To {
-		return config{}, errors.New("wikigeul: need 1 <= -from <= -to")
-	}
-	if err := checkDumpFlags(&c, fs); err != nil {
+	if err := checkDumpFlags(c); err != nil {
 		return config{}, err
 	}
 	return c, nil

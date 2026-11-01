@@ -27,4 +27,20 @@ func TestSaveState(t *testing.T) {
 	if err := saveState(odd, State{}); err == nil {
 		t.Fatal("directory in the way: want an error")
 	}
+	full := t.TempDir()
+	os.Symlink("/dev/full", filepath.Join(full, "state.json.tmp"))
+	if err := saveState(full, State{}); err == nil {
+		t.Fatal("full disk: want an error")
+	}
+	noSync := t.TempDir()
+	os.Symlink("/dev/null", filepath.Join(noSync, "state.json.tmp"))
+	if err := saveState(noSync, State{}); err == nil {
+		t.Fatal("file that cannot sync: want an error")
+	}
+	unread := t.TempDir()
+	os.Chmod(unread, 0o300)
+	t.Cleanup(func() { os.Chmod(unread, 0o700) })
+	if err := saveState(unread, State{}); err == nil {
+		t.Fatal("directory that cannot be opened to sync: want an error")
+	}
 }

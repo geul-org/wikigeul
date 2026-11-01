@@ -12,6 +12,7 @@ import (
 	"testing"
 
 	"github.com/geul-org/wikigeul/internal/dumpfile"
+	"github.com/geul-org/wikigeul/pkg/pipeline"
 )
 
 func TestListedJobs(t *testing.T) {
@@ -26,12 +27,12 @@ func TestListedJobs(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	var got []packJob
-	collect := func(j packJob) bool { got = append(got, j); return true }
+	var got []pipeline.PackJob
+	collect := func(j pipeline.PackJob) bool { got = append(got, j); return true }
 	m, _ := dumpfile.OpenMerger(dumpfile.Paths(filepath.Join(dir, "s"), st.Runs))
-	err = dumpJobs(newDumpCursor(m), []packJob{{Kind: 'P', Num: 31}, {Kind: 'Q', Num: 3}, {Kind: 'Q', Num: 7}}, collect)
+	err = dumpJobs(newDumpCursor(m), []pipeline.PackJob{{Kind: 'P', Num: 31}, {Kind: 'Q', Num: 3}, {Kind: 'Q', Num: 7}}, collect)
 	m.Close()
-	if err != nil || len(got) != 3 || got[0].Line != `{"id":"P31"}` || !got[1].Dump || got[1].Line != "" || got[2].Line != `{"id":"Q7"}` {
+	if err != nil || len(got) != 3 || got[0].Line != `{"id":"P31"}` || got[1].Line != "" || got[2].Line != `{"id":"Q7"}` {
 		t.Fatalf("listed %+v %v", got, err)
 	}
 	got = nil
@@ -42,12 +43,12 @@ func TestListedJobs(t *testing.T) {
 		t.Fatalf("all %+v %v", got, err)
 	}
 	boom := errors.New("boom")
-	if err := listedJobs(&dumpCursor{err: boom}, []packJob{{Kind: 'Q', Num: 1}}, collect); err != boom {
+	if err := listedJobs(&dumpCursor{err: boom}, []pipeline.PackJob{{Kind: 'Q', Num: 1}}, collect); err != boom {
 		t.Fatalf("cursor error: %v", err)
 	}
 	m, _ = dumpfile.OpenMerger(dumpfile.Paths(filepath.Join(dir, "s"), st.Runs))
 	n := 0
-	err = listedJobs(newDumpCursor(m), []packJob{{Kind: 'P', Num: 31}, {Kind: 'Q', Num: 2}}, func(packJob) bool { n++; return false })
+	err = listedJobs(newDumpCursor(m), []pipeline.PackJob{{Kind: 'P', Num: 31}, {Kind: 'Q', Num: 2}}, func(pipeline.PackJob) bool { n++; return false })
 	m.Close()
 	if err != nil || n != 1 {
 		t.Fatalf("stopped: %d %v", n, err)

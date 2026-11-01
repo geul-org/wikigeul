@@ -5,6 +5,8 @@ package main
 import (
 	"fmt"
 	"os"
+
+	"github.com/geul-org/wikigeul/pkg/pipeline"
 )
 
 // advance moves cur to the next record of the merge as a dump job. A record
@@ -25,7 +27,7 @@ func (d *dumpCursor) advance() {
 			fmt.Fprintf(os.Stderr, "wikigeul: %c%d again at dump line %d, left out (the first line is kept)\n", r.Kind, r.Num, r.Line)
 			continue
 		}
-		d.cur, d.ok = packJob{Kind: r.Kind, Num: r.Num, Dump: true, Line: string(r.Data)}, true
+		d.cur, d.ok = pipeline.PackJob{Kind: r.Kind, Num: r.Num, Line: string(r.Data)}, true
 		return
 	}
 }

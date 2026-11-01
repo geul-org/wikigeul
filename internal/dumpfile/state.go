@@ -10,7 +10,7 @@ package dumpfile
 // so far, every kept line of which is in Runs; Hash is the SHA-256 state of
 // a plain file at Offset (a compressed file is hashed again from its start
 // when resumed). Kept, Skipped and Bad count entity lines kept, left out by
-// the filter or another kind (L, E …), and not read (no id, an ID wikipg
+// the filter or another kind (L, E …), and not read (no id, an ID wikipgeul
 // cannot split). Scanned is set when the whole file was read and its SHA-256
 // matched; Done when the runs were merged down to at most mergeFanIn.
 type State struct {

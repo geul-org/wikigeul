@@ -1,5 +1,5 @@
 //ff:func feature=dumpfile type=loader control=sequence
-//ff:what InfoOf — a dump file's Info with wikipg's defaults: URL from the file name's date, SHA-256 from <file>.sha256, download time from the file
+//ff:what InfoOf — a dump file's Info with wikipgeul's defaults: URL from the file name's date, SHA-256 from <file>.sha256, download time from the file
 package dumpfile
 
 import (
@@ -10,9 +10,9 @@ import (
 	"strings"
 )
 
-// InfoOf describes the dump at path as wikipg fills its dump row, so the
+// InfoOf describes the dump at path as wikipgeul fills its dump row, so the
 // documents record the same provenance as when converted from the loaded
-// database (wikipg dumpInfoOf): url, else
+// database (wikipgeul dumpInfoOf): url, else
 // https://dumps.wikimedia.org/wikidatawiki/entities/<date>/<file name> with
 // the date of a wikidata-YYYYMMDD-… name; sha256, else the hash for the file
 // name in <path>.sha256 (sha256sum format); downloadedAt (Unix seconds), else

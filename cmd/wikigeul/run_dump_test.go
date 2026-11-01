@@ -11,6 +11,8 @@ import (
 	"testing"
 
 	"github.com/geul-org/gogeul/pkg/pack"
+
+	"github.com/geul-org/wikigeul/pkg/pipeline"
 )
 
 func TestRunDump(t *testing.T) {
@@ -39,10 +41,10 @@ func TestRunDump(t *testing.T) {
 		t.Fatalf("report:\n%s", b)
 	}
 	strict := t.TempDir()
-	if err := run(args(strict, "-strict", "-anomaly", filepath.Join(strict, "a.tsv"))); !errors.As(err, &anomalyError{}) {
+	if err := run(args(strict, "-strict", "-anomaly", filepath.Join(strict, "a.tsv"))); !errors.As(err, &pipeline.AnomalyError{}) {
 		t.Fatalf("strict: %v", err)
 	}
-	if err := run(args(strict, "-strict", "-resume", "-anomaly", filepath.Join(strict, "a.tsv"), "-allow", "decode:"+dropReason)); err != nil {
+	if err := run(args(strict, "-strict", "-resume", "-anomaly", filepath.Join(strict, "a.tsv"), "-allow", "decode:덤프 줄 해석 실패")); err != nil {
 		t.Fatalf("strict allowed: %v", err)
 	}
 	ids := filepath.Join(t.TempDir(), "ids")

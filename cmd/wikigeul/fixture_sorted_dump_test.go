@@ -7,14 +7,15 @@ import (
 	"testing"
 
 	"github.com/geul-org/wikigeul/internal/dumpfile"
+	"github.com/geul-org/wikigeul/pkg/pipeline"
 )
 
 // fixtureSortedDump sorts testDumpBody for c (every property and Q1–Q100, or
 // ids) and returns c with the dump fields set and the sort state.
-func fixtureSortedDump(t *testing.T, ids []packJob) (config, dumpfile.State) {
+func fixtureSortedDump(t *testing.T, ids []pipeline.PackJob) (config, dumpfile.State) {
 	t.Helper()
-	c := packTestConfig(t, "wikidata")
-	c.DumpFile, c.SortDir, c.SortMem, c.RefOrder = fixtureDumpFile(t, testDumpBody), filepath.Join(t.TempDir(), "sort"), 1, true
+	c := packTestConfig(t)
+	c.DumpFile, c.SortDir, c.SortMem = fixtureDumpFile(t, testDumpBody), filepath.Join(t.TempDir(), "sort"), 1
 	info, err := dumpfile.InfoOf(c.DumpFile, "", "", 0)
 	if err != nil {
 		t.Fatal(err)

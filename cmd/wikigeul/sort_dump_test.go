@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/geul-org/wikigeul/internal/dumpfile"
+	"github.com/geul-org/wikigeul/pkg/pipeline"
 )
 
 func TestSortDump(t *testing.T) {
@@ -16,7 +17,7 @@ func TestSortDump(t *testing.T) {
 	}
 	info, _ := dumpfile.InfoOf(c.DumpFile, "", "", 0)
 	c.SortDir = filepath.Join(t.TempDir(), "l")
-	st, err := sortDump(c, info, []packJob{{Kind: 'Q', Num: 42}}, "abc")
+	st, err := sortDump(c, info, []pipeline.PackJob{{Kind: 'Q', Num: 42}}, "abc")
 	if err != nil || st.Kept != 1 || st.Filter != "ids sha256:abc" {
 		t.Fatalf("list %+v %v", st, err)
 	}

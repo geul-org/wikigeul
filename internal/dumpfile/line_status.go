@@ -9,5 +9,5 @@ const (
 	lineNone    lineStatus = iota // "[", "]" or blank: no entity
 	lineKept                      // an entity the filter keeps
 	lineSkipped                   // an entity the filter leaves out (another kind, range, list)
-	lineBad                       // no readable id, or an ID wikipg cannot split
+	lineBad                       // no readable id, or an ID wikipgeul cannot split
 )

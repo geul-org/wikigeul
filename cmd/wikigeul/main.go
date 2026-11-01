@@ -6,17 +6,19 @@ import (
 	"errors"
 	"fmt"
 	"os"
+
+	"github.com/geul-org/wikigeul/pkg/pipeline"
 )
 
 // main runs wikigeul (README) and exits 1 on an error, 3 when a strict run
-// stopped at an anomaly (anomalyError).
+// stopped at an anomaly (AnomalyError).
 func main() {
 	err := run(os.Args[1:])
 	if err == nil {
 		return
 	}
 	fmt.Fprintln(os.Stderr, err)
-	if errors.As(err, &anomalyError{}) {
+	if errors.As(err, &pipeline.AnomalyError{}) {
 		os.Exit(3)
 	}
 	os.Exit(1)

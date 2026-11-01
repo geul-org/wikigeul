@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/geul-org/wikigeul/internal/dumpfile"
+	"github.com/geul-org/wikigeul/pkg/pipeline"
 )
 
 func TestDumpSampleJobs(t *testing.T) {
@@ -14,11 +15,11 @@ func TestDumpSampleJobs(t *testing.T) {
 	if err != nil || len(got) != 2 || got[0].Num != 1 || got[1].Num != 42 {
 		t.Fatalf("%+v %v", got, err)
 	}
-	got, err = dumpSampleJobs(c, st, []packJob{{Kind: 'P', Num: 31}, {Kind: 'Q', Num: 7}, {Kind: 'Q', Num: 42}, {Kind: 'Q', Num: 50}})
+	got, err = dumpSampleJobs(c, st, []pipeline.PackJob{{Kind: 'P', Num: 31}, {Kind: 'Q', Num: 7}, {Kind: 'Q', Num: 42}, {Kind: 'Q', Num: 50}})
 	if err != nil || len(got) != 2 || got[0].Num != 7 || got[0].Line != "" || got[1].Num != 42 || got[1].Line == "" {
 		t.Fatalf("list %+v %v", got, err)
 	}
-	if got, err := dumpSampleJobs(c, st, []packJob{{Kind: 'P', Num: 31}}); err != nil || got == nil || len(got) != 0 {
+	if got, err := dumpSampleJobs(c, st, []pipeline.PackJob{{Kind: 'P', Num: 31}}); err != nil || got == nil || len(got) != 0 {
 		t.Fatalf("no Q in list %+v %v", got, err)
 	}
 	if _, err := dumpSampleJobs(c, dumpfile.State{Runs: []string{"none"}}, nil); err == nil {

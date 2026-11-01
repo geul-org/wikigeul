@@ -2,12 +2,14 @@
 //ff:what listedJobs — a job per listed entity with its dump line, without one when the dump does not hold it
 package main
 
-// listedJobs sends a dump job for each entity of ids (in key order, readIDs)
+import "github.com/geul-org/wikigeul/pkg/pipeline"
+
+// listedJobs sends a dump job for each entity of ids (in key order, ReadIDs)
 // until send returns false: with its line when the sorted dump d holds it,
 // without (loadJob: missing, as the database reports it) when not.
-func listedJobs(d *dumpCursor, ids []packJob, send func(packJob) bool) error {
+func listedJobs(d *dumpCursor, ids []pipeline.PackJob, send func(pipeline.PackJob) bool) error {
 	for _, id := range ids {
-		j := packJob{Kind: id.Kind, Num: id.Num, Dump: true}
+		j := pipeline.PackJob{Kind: id.Kind, Num: id.Num}
 		if d.seek(id.Kind, id.Num) {
 			j = d.cur
 		}

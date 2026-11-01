@@ -9,7 +9,7 @@ import (
 )
 
 // readSum reads a checksum file in the "<hash>  <name>" format (sha256sum)
-// and returns the hash of the line whose name ends with name, as wikipg
+// and returns the hash of the line whose name ends with name, as wikipgeul
 // reads <dump>.sha256. A missing file or line is "".
 func readSum(path, name string) string {
 	b, err := os.ReadFile(path)

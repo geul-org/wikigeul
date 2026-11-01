@@ -2,10 +2,12 @@
 //ff:what dumpCursor.seek — move to an entity of the sorted dump; whether the dump holds it
 package main
 
-// seek advances past the entities before (kind, num) in key order (jobAfter)
+import "github.com/geul-org/wikigeul/pkg/pipeline"
+
+// seek advances past the entities before (kind, num) in key order (JobAfter)
 // and reports whether the cursor is then on that entity.
 func (d *dumpCursor) seek(kind byte, num uint64) bool {
-	for d.ok && jobAfter(kind, num, d.cur.Kind, d.cur.Num) {
+	for d.ok && pipeline.JobAfter(kind, num, d.cur.Kind, d.cur.Num) {
 		d.advance()
 	}
 	return d.ok && d.cur.Kind == kind && d.cur.Num == num

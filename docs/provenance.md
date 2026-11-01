@@ -10,7 +10,7 @@ HEAD에 문서 전체의 근거 Edge SOURCE(Target `#0`) 둘을 둔다.
 2. **덤프 파일:** 원천 = `REFERENCE-NODE #d #f <dump.url>`로 정의한 LOCAL. 그 SOURCE에 `QUALIFIER P4092`(파일 SHA-256, `dump.sha256`, SHA-256-DIGEST; 모르면 생략)와 `QUALIFIER P813`(받은 시각 `dump.downloaded_at`, POSIX-TIMESTAMP-SECONDS).
 
 - 판과 덤프를 SOURCE 둘로 나눈 근거: 판은 내용의 원천이고(영구 주소로 같은 내용을 다시 받을 수 있다) 덤프는 그 판을 받은 파일이다. 파일 해시와 받은 시각은 덤프 파일에 관한 인용 쪽 성질이라 덤프 SOURCE의 QUALIFIER다. 한 SOURCE에 섞으면 해시가 판의 해시처럼 읽힌다. 덤프 SOURCE는 같은 실행의 모든 문서에서 같은 바이트다.
-- 실행 옵션은 문서에 적지 않는다. 문서 내용을 바꾸는 옵션이 없다(`-schema`·`-dump-id`는 로컬 DB 위치이고 덤프는 SOURCE가 고정한다). 범위·DB·커밋은 실행 보고서 첫 줄에 남는다.
+- 실행 옵션은 문서에 적지 않는다. 문서 내용을 바꾸는 옵션이 없다(wikipgeul `export-geul`의 `-schema`·`-dump-id`는 로컬 DB 위치이고 덤프는 SOURCE가 고정한다). 범위·DB·커밋은 실행 보고서 첫 줄에 남는다.
 
 ## 변환 도구 (TRANSFORMED-BY)
 
@@ -18,10 +18,10 @@ TRANSFORMED-BY 둘을 둔다. 도구 Reference는 geul.org 용어 정의 문서(
 
 | 도구 | geul.org 용어 정의 문서 | 버전 |
 |---|---|---|
-| 변환 도구 wikigeul (이 저장소) | `0x0001000000000001` | `-commit` |
+| 변환 도구 wikigeul (이 저장소. wikipgeul `export-geul`로 돌려도 변환 코드는 여기다) | `0x0001000000000001` | `-commit`(wikigeul 커밋) |
 | GEUL 라이브러리 [gogeul](https://github.com/geul-org/gogeul) | `0x0001000000000002` | `-lib-commit` |
 
-- 적재 도구(wikipg)는 적지 않는다. wikipg는 덤프를 무손실로 저장하므로 문서는 덤프·wikigeul·라이브러리로 정해진다. 적재 도구 커밋은 DB `dump.loader_commit`에 남는다.
+- 적재 도구(wikipgeul)는 적지 않는다. wikipgeul는 덤프를 무손실로 저장하므로 문서는 덤프·wikigeul·라이브러리로 정해진다. 적재 도구 커밋은 DB `dump.loader_commit`에 남는다.
 - 커밋은 커밋된 소스여야 한다. 작업 트리에 커밋되지 않은 변경이 있으면 그 커밋 ID를 쓰지 말고 먼저 커밋한다(도구는 아직 검사하지 않는다).
 - Go 워크스페이스로 다른 gogeul을 쓰면 `go.mod`가 고정한 버전과 다를 수 있다. 그래서 `-lib-commit`을 따로 받는다.
 
@@ -40,7 +40,7 @@ QUALIFIER  #1357  P813  #1356 GREGORIAN-DATE(2013-12-07)
 ```
 
 - 읽는 표: `statement_reference`(statement_id, ordinal → hash)와 `reference_snak`(hash, dump_id, ordinal). 두 표의 기본 키 색인을 탄다(hash를 함수로 감싸지 않는다). 출처 순서는 `ordinal`이다.
-- 출처 항목 순서는 그 출현의 snaks-order다. `reference_snak_order`가 있으면 출현별 순서를, 없으면 hash의 첫 출현 순서를 쓴다([database.md](database.md#출현별-출처-항목-순서)).
+- 출처 항목 순서는 그 출현의 snaks-order다. `reference_snak_order`가 있으면 출현별 순서를, 없으면 hash의 첫 출현 순서를 쓴다(wikipgeul [docs/export-geul.md](https://github.com/geul-org/wikipgeul/blob/main/docs/export-geul.md)).
 - 항목은 qualifier와 같은 규칙으로 값을 바꾼다(somevalue·novalue는 자리 표지). 옮기지 못한 항목은 보고서 `skipped`에 `reference ` 접두로 센다.
 - **속성 분류**(`port.originProperties`): 원천 쪽은 P248(stated in), P854(reference URL), P1476(title), P1680(subtitle), P50(author), P2093(author name string), P98(editor), P655(translator), P577(publication date), P1433(published in), P123(publisher), P291(place of publication), P407(language of work or name). 나머지(P813, P143, P887, P4656, P304, 외부 식별자 등)와 분류되지 않은 속성은 인용 쪽이다.
 - **원천 결정**(`port.originOf`):

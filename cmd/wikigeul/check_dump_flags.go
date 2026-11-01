@@ -1,29 +1,18 @@
 //ff:func feature=cli type=command control=sequence
-//ff:what checkDumpFlags — check the flags of a run reading a dump directly and default its workers
+//ff:what checkDumpFlags — check the flags of the dump file: -dump given, a positive -sort-mem
 package main
 
-import (
-	"errors"
-	"flag"
-)
+import "errors"
 
-// checkDumpFlags checks c when -dump is given: pack mode only (directory
-// mode reads entities by ID at random), a positive -sort-mem. Without
-// -workers it takes defaultDumpWorkers. Without -dump nothing changes.
-func checkDumpFlags(c *config, fs *flag.FlagSet) error {
+// checkDumpFlags checks c: wikigeul reads a dump file, so -dump is required
+// (the loaded database is read by wikipgeul export-geul), and -sort-mem must be
+// positive.
+func checkDumpFlags(c config) error {
 	if c.DumpFile == "" {
-		return nil
-	}
-	if c.Out != "pack" {
-		return errors.New("wikigeul: -dump needs -out pack")
+		return errors.New("wikigeul: -dump is required (a dump loaded into PostgreSQL converts with wikipgeul export-geul)")
 	}
 	if c.SortMem < 1 {
 		return errors.New("wikigeul: -sort-mem must be at least 1 (MiB)")
-	}
-	workers := false
-	fs.Visit(func(f *flag.Flag) { workers = workers || f.Name == "workers" })
-	if !workers {
-		c.Workers = defaultDumpWorkers()
 	}
 	return nil
 }

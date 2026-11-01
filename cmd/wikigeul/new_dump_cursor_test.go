@@ -13,7 +13,7 @@ func TestNewDumpCursor(t *testing.T) {
 	m, _ := dumpfile.OpenMerger(dumpfile.Paths(c.SortDir, st.Runs))
 	defer m.Close()
 	d := newDumpCursor(m)
-	if !d.ok || d.err != nil || d.cur.Kind != 'P' || d.cur.Num != 31 || !d.cur.Dump || d.cur.Line == "" {
+	if !d.ok || d.err != nil || d.cur.Kind != 'P' || d.cur.Num != 31 || d.cur.Line == "" {
 		t.Fatalf("%+v", d.cur)
 	}
 }

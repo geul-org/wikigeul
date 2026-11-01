@@ -4,21 +4,19 @@ package main
 
 import (
 	"github.com/geul-org/wikigeul/internal/dumpfile"
-	"github.com/geul-org/wikigeul/internal/port"
+	"github.com/geul-org/wikigeul/pkg/pipeline"
+	"github.com/geul-org/wikigeul/pkg/port"
 )
 
-// dumpProvenance is provenanceOf for a dump read directly: the URL, file
-// SHA-256 and download time come from d (dumpfile.InfoOf, the values wikipg
+// dumpProvenance is the provenance of a dump read directly: the URL, file
+// SHA-256 and download time come from d (dumpfile.InfoOf, the values wikipgeul
 // would have put in the dump row), the tools are the same two (wikigeul at
-// commit, gogeul at libCommit). No loader is involved.
+// commit, gogeul at libCommit: pipeline.Tools). No loader is involved.
 func dumpProvenance(d dumpfile.Info, commit, libCommit string) port.Provenance {
 	return port.Provenance{
 		DumpURI:    d.URL,
 		DumpSHA256: d.SHA256,
 		AcquiredAt: d.DownloadedAt,
-		Tools: []port.Tool{
-			{Doc: 1, Commit: commit},
-			{Doc: 2, Commit: libCommit},
-		},
+		Tools:      pipeline.Tools(commit, libCommit),
 	}
 }

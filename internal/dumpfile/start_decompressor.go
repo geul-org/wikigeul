@@ -15,7 +15,7 @@ import (
 // through in.raw (so every byte is hashed). A .gz is read by a gzip reader
 // (multistream, as pigz and gzip write). A .bz2 goes through the program
 // bzip2Program on standard input — lbzip2 -dc -n threads decompresses even a
-// single-stream file in parallel, as wikipg reads it — and in.cmd waits for
+// single-stream file in parallel, as wikipgeul reads it — and in.cmd waits for
 // it.
 func startDecompressor(in *input, c SortConfig) error {
 	switch {

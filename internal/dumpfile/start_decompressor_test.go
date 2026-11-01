@@ -1,5 +1,5 @@
 //ff:func feature=dumpfile type=loader control=iteration dimension=1
-//ff:what TestStartDecompressor — gzip in-process, bzip2 through the program (with lbzip2's thread flag when it is the program); bad gzip or a missing program is an error
+//ff:what TestStartDecompressor — gzip in-process, bzip2 through the program (with lbzip2's thread flag when it is the program); bad gzip, a pipe that cannot open or a missing program is an error
 package dumpfile
 
 import (
@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"syscall"
 	"testing"
 )
 
@@ -40,6 +41,20 @@ func TestStartDecompressor(t *testing.T) {
 	in.cmd.Wait()
 	if string(b) != "-dc -n 3\n" {
 		t.Fatalf("lbzip2 args %q", b)
+	}
+	var lim syscall.Rlimit
+	if err := syscall.Getrlimit(syscall.RLIMIT_NOFILE, &lim); err != nil {
+		t.Fatal(err)
+	}
+	low := lim
+	low.Cur = 3
+	if err := syscall.Setrlimit(syscall.RLIMIT_NOFILE, &low); err != nil {
+		t.Fatal(err)
+	}
+	err := startDecompressor(&input{raw: strings.NewReader("")}, SortConfig{Info: Info{Name: "x.bz2"}})
+	syscall.Setrlimit(syscall.RLIMIT_NOFILE, &lim)
+	if err == nil {
+		t.Fatal("no file descriptor for the pipe: want an error")
 	}
 	t.Setenv("PATH", t.TempDir())
 	in = &input{raw: strings.NewReader("")}

@@ -5,7 +5,7 @@ package dumpfile
 import "os/exec"
 
 // bzip2Program is the program that decompresses a .bz2 dump: lbzip2 when it
-// is on PATH, else bzip2 (as wikipg chooses).
+// is on PATH, else bzip2 (as wikipgeul chooses).
 func bzip2Program() string {
 	if _, err := exec.LookPath("lbzip2"); err == nil {
 		return "lbzip2"

@@ -2,7 +2,10 @@
 //ff:what dumpCursor — the sorted dump entities as jobs, one at a time: the current one, whether there is one, the read error
 package main
 
-import "github.com/geul-org/wikigeul/internal/dumpfile"
+import (
+	"github.com/geul-org/wikigeul/internal/dumpfile"
+	"github.com/geul-org/wikigeul/pkg/pipeline"
+)
 
 // dumpCursor walks the merged runs of a sorted dump (dumpfile.Merger) as
 // dump jobs: cur is the current entity while ok; err is the error that ended
@@ -10,7 +13,7 @@ import "github.com/geul-org/wikigeul/internal/dumpfile"
 // (advance).
 type dumpCursor struct {
 	m   *dumpfile.Merger
-	cur packJob
+	cur pipeline.PackJob
 	ok  bool
 	err error
 }

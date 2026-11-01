@@ -7,7 +7,7 @@ import "fmt"
 // lineRecord takes dump line number line: its entity JSON (trimLine), the
 // ID's letter and number (lineID, SplitID) and whether keep keeps it. A line
 // without an entity is lineNone, one whose ID cannot be read or split is
-// lineBad with the reason — wikipg loads no entity for it either.
+// lineBad with the reason — wikipgeul loads no entity for it either.
 func lineRecord(raw []byte, line int64, keep func(byte, uint64) bool) (Record, lineStatus, error) {
 	b, ok := trimLine(raw)
 	if !ok {

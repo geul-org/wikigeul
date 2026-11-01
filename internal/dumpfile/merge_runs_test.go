@@ -51,4 +51,8 @@ func TestMergeRuns(t *testing.T) {
 	if err := mergeRuns(out+"3", []string{bad}, 1); err == nil {
 		t.Fatal("corrupt input: want an error")
 	}
+	os.Symlink("/dev/full", filepath.Join(dir, "full.tmp"))
+	if err := mergeRuns(filepath.Join(dir, "full"), []string{a}, 1); err == nil {
+		t.Fatal("full disk at the close: want an error")
+	}
 }

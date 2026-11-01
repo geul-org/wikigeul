@@ -9,14 +9,16 @@ import (
 	"testing"
 
 	"github.com/geul-org/wikigeul/internal/dumpfile"
+	"github.com/geul-org/wikigeul/pkg/pipeline"
 )
 
 func TestRunDumpPack(t *testing.T) {
 	c, st := fixtureSortedDump(t, nil)
-	reg := t.TempDir()
-	fixtureRegistry(t, reg)
-	rd, _ := registryDir(reg)
-	c.Langs, c.LangDoc, _ = languageRegistry(rd, 0)
+	c.LangRoot = t.TempDir()
+	fixtureRegistry(t, c.LangRoot)
+	if err := pipeline.LoadLanguages(&c.Config); err != nil {
+		t.Fatal(err)
+	}
 	prov := dumpProvenance(dumpfile.Info{URL: "u", SHA256: strings.Repeat("ab", 32)}, c.Commit, c.LibCommit)
 	c.Resume, c.RecordedAt = true, 0
 	if err := runDumpPack(c, prov, st, nil, ""); err != nil {

@@ -5,7 +5,7 @@ package dumpfile
 // Info is a Wikidata JSON dump file read directly (wikigeul -dump): its path
 // and file name, size and modification time (Unix seconds; with the name and
 // SHA-256 they tell the sort state's dump apart), and the provenance every
-// document records (port.Provenance), which wikipg would have put in the
+// document records (port.Provenance), which wikipgeul would have put in the
 // dump row: the URL, the file's SHA-256 in hex and when it was downloaded
 // (Unix seconds).
 type Info struct {

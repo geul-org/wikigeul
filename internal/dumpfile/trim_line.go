@@ -4,8 +4,8 @@ package dumpfile
 
 import "bytes"
 
-// trimLine returns the entity JSON of one dump line as wikipg takes it
-// (wikipg dump.TrimLine): without the newline, carriage return and the comma
+// trimLine returns the entity JSON of one dump line as wikipgeul takes it
+// (wikipgeul dump.TrimLine): without the newline, carriage return and the comma
 // between array elements, trimmed. The "[" and "]" lines and blank lines
 // carry no entity and are false.
 func trimLine(line []byte) ([]byte, bool) {
