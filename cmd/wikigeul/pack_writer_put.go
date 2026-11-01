@@ -4,6 +4,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/geul-org/gogeul/pkg/core"
@@ -14,7 +15,10 @@ import (
 // (slot 0) and version 1 (slot 1) under wikidata.geul.org after checking its
 // TRANSFORMED-BY records equal the run's first document's (one porter and
 // one library commit per set). A strict writer first stops at r's
-// anomalies (anomaliesOf, halt) before anything of r is written. Every
+// anomalies (anomaliesOf, halt) before anything of r is written. A Dropped
+// result (a dump line that does not decode) writes nothing, not even a report
+// line — the loaded database would not list the entity — and is told on
+// stderr. Every
 // `every` documents it checkpoints and prints a progress line.
 func (w *packWriter) put(r packResult) error {
 	if w.strict {
@@ -24,6 +28,11 @@ func (w *packWriter) put(r packResult) error {
 	}
 	if r.Err != nil {
 		return fmt.Errorf("%c%d: %w", r.Job.Kind, r.Job.Num, r.Err)
+	}
+	if r.Dropped != "" {
+		fmt.Fprintf(os.Stderr, "wikigeul: %c%d left out: %s\n", r.Job.Kind, r.Job.Num, r.Dropped)
+		w.prog.Kind, w.prog.Num = r.Job.Kind, r.Job.Num
+		return nil
 	}
 	n, _ := w.w.WriteString(reportLine(r.Rep) + "\n")
 	w.prog.Report += int64(n)

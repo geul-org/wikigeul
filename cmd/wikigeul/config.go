@@ -1,5 +1,5 @@
 //ff:type feature=cli type=model
-//ff:what config — the wikigeul run settings: tree root, QID range, DB DSN, loaded dump (and whether it keeps each reference occurrence's snak order), porter and library commits, report path
+//ff:what config — the wikigeul run settings: tree root, QID range, DB DSN, loaded dump (and whether it keeps each reference occurrence's snak order) or dump file, porter and library commits, report path
 package main
 
 import "github.com/geul-org/wikigeul/internal/port"
@@ -27,6 +27,12 @@ import "github.com/geul-org/wikigeul/internal/port"
 // mismatch, a schema Fact other than the known Warn E6), after a checkpoint,
 // writing the anomaly report Anomaly; Allow adds "kind:reason" entries
 // ("raw:time: 0년", "warn:E7") to the normal list for a resumed run.
+// DumpFile (-dump) reads a Wikidata JSON dump directly instead of the
+// database (runDump, pack mode): DumpURL, DumpSHA256 and DumpTime override
+// the provenance taken from the file (dumpfile.InfoOf), SortDir holds the
+// sort into key order and its checkpoints, SortMem is the MiB of entity JSON
+// per sorted run. Source is not a flag: runDump names the dump by file name
+// and SHA-256 there, part of the checkpoint identity.
 type config struct {
 	Root       string
 	From       uint64
@@ -52,4 +58,11 @@ type config struct {
 	Strict     bool
 	Anomaly    string
 	Allow      []string
+	DumpFile   string
+	DumpURL    string
+	DumpSHA256 string
+	DumpTime   int64
+	SortDir    string
+	SortMem    int64
+	Source     string
 }

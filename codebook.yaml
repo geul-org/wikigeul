@@ -1,12 +1,14 @@
 required:
   feature:
-    source: "적재된 위키데이터 덤프(geuldev.wikidata) 읽기 — 판, 개체, 레이블·설명·별칭, statement·qualifier"
+    source: "적재된 위키데이터 덤프(geuldev.wikidata) 읽기 — 판, 개체, 레이블·설명·별칭, statement·qualifier; 덤프 한 줄을 같은 개체로 디코드"
     port: "위키데이터 개체 → GEUL 레코드·문서 조립 — HEAD 출처 기록, LABEL·ALIAS·STATEMENT, 값 변환"
     publish: "공표와 이름 색인 — resolve.Publish, documents.geul"
+    dumpfile: "위키데이터 JSON 덤프 파일 직접 읽기 — 압축 해제, 개체 줄, 문서 키 순 정렬 런·합치기, 체크포인트"
     cli: "wikigeul 명령 실행 — 플래그, 범위 반복, 출처 기록, 이름 색인, 보고서"
   type:
     model: "data type definition"
-    loader: "DB → structure"
+    loader: "DB·덤프 → structure"
+    writer: "정렬 런·상태 파일 쓰기"
     encoder: "structure → GEUL record or document"
     helper: "internal utility function"
     command: "command entrypoint and orchestration"

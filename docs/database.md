@@ -1,6 +1,6 @@
 # 읽는 DB 테이블
 
-wikigeul은 [wikipg](https://github.com/geul-org/wikipg)가 적재한 스키마(기본 `wikidata`)를 읽기만 한다. 테이블 정의는 wikipg `sql/wikidata.sql`이다.
+wikigeul은 [wikipg](https://github.com/geul-org/wikipg)가 적재한 스키마(기본 `wikidata`)를 읽기만 한다. DB 없이 덤프 파일을 바로 읽는 경로(`-dump`)에서 각 열을 덤프 JSON의 어디에서 얻는지는 [dump.md](dump.md)에 있다. 테이블 정의는 wikipg `sql/wikidata.sql`이다.
 
 | 테이블 | wikigeul이 쓰는 열 |
 |---|---|

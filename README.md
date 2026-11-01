@@ -1,6 +1,6 @@
 # wikigeul
 
-`wikigeul` converts Wikidata entities into [GEUL](https://geul.org/) documents. It reads a Wikidata dump that [wikipg](https://github.com/geul-org/wikipg) has loaded into PostgreSQL and publishes one `.geul` document per item or property — labels, descriptions, aliases, claims with qualifiers and references, and sitelinks in every language — under `.well-known/geul/`.
+`wikigeul` converts Wikidata entities into [GEUL](https://geul.org/) documents. It reads a Wikidata dump that [wikipg](https://github.com/geul-org/wikipg) has loaded into PostgreSQL — or, with `-dump`, the Wikidata JSON dump file itself — and publishes one `.geul` document per item or property — labels, descriptions, aliases, claims with qualifiers and references, and sitelinks in every language — under `.well-known/geul/`.
 
 All documents are published under one Issuer, `wikidata.geul.org` (`0x00010000`). The top byte of a document ID is the entity kind letter (`Q` = `0x51`, `P` = `0x50`) and the low 56 bits are its number, so Q42 is document `0x510000000000002a`.
 
@@ -13,7 +13,7 @@ go install github.com/geul-org/wikigeul/cmd/wikigeul@latest
 ## Requirements
 
 - Go 1.25 or later.
-- PostgreSQL holding a Wikidata dump loaded by [wikipg](https://github.com/geul-org/wikipg). wikigeul refuses a dump loaded by any other tool, because only wikipg's store is known to be lossless.
+- PostgreSQL holding a Wikidata dump loaded by [wikipg](https://github.com/geul-org/wikipg). wikigeul refuses a dump loaded by any other tool, because only wikipg's store is known to be lossless. Or, instead of the database, the dump file itself (`-dump`, see below): `.json`, `.json.gz`, or `.json.bz2` with `lbzip2` (preferred) or `bzip2` on `PATH`, and its SHA-256 as `<file>.sha256` or `-dump-sha256`.
 - The full git commit IDs of this tool and of the [gogeul](https://github.com/geul-org/gogeul) library it was built with; they are recorded in every document.
 - An archive holding the LANGUAGE-SHORT-CODE codec spec document `0x0000/0x0000000000000848` (the GEUL Language Registry), by default `-root` itself.
 
@@ -30,6 +30,18 @@ By default (`-out pack`) the documents go straight into the Issuer's pack set `<
 
 With `-out dir` (for tests) it converts Q1–Q1000, then every property those documents use, into the directory tree `<root>/.well-known/geul/` and writes the Issuer's name index `documents.geul` (`q42`, `p31`, …). The index keeps documents already published there, so a range can be converted in several runs. Both modes give the same document bytes for the same input and commits.
 
+### Reading the dump file directly
+
+```sh
+wikigeul -dump wikidata-YYYYMMDD-all.json.bz2 -root ./archive -from 1 -to 200000000 \
+  -commit "$(git rev-parse HEAD)" -lib-commit <gogeul commit> \
+  -sort-dir ./wikigeul-dumpsort -report report.tsv
+```
+
+With `-dump` (pack mode only) no database is used: each entity line is decoded into the same `source.Entity` the database path reads after wikipg loaded that line (`source.DecodeDumpEntity`: the same orders, value forms including PostgreSQL's jsonb text, qualifiers-order, each reference occurrence's own snaks-order, sitelinks), so the documents are byte for byte those of the database path for the same dump file, commits, registry and `-recorded-at`. The provenance comes from the file as wikipg would record it: `-dump-url` (default: the dumps.wikimedia.org URL from the file name's date), `-dump-sha256` (default: `<file>.sha256`; the file is checked against it), `-dump-time` (default: the file's modification time).
+
+A dump is in no ID order, but the pack stream takes documents in key order. So the run first sorts the entity lines it converts (every property and Q<from>…Q<to>, or `-ids`) into zstd runs of `-sort-mem` MiB under `-sort-dir`, merged down to at most 64, then merges them into key order while converting. The sort checkpoints after every run and resumes by itself when the command is run again (a plain file at the exact byte offset; `.gz`/`.bz2` are decompressed again from the start and skipped up to it); the conversion checkpoints and resumes (`-resume`) as in pack mode. Workers default to 70% of the CPUs (no database backends). Details, the table of what maps to what and the few known differences: [docs/dump.md](docs/dump.md).
+
 The database connection comes from `-dsn` or, when it is empty, from the standard libpq environment variables (`PGHOST`, `PGPORT`, `PGUSER`, `PGDATABASE`, …) and the password file `~/.pgpass`.
 
 | Flag | Meaning | Default |
@@ -43,7 +55,7 @@ The database connection comes from `-dsn` or, when it is empty, from the standar
 | `-dump-id` | Which loaded dump to read (wikipg `-dump-id`, 1–255) | `1` |
 | `-report` | Write a per-entity TSV report to this path | none |
 | `-out` | `pack` (the Issuer's pack set, streamed) or `dir` (directory tree, for tests) | `pack` |
-| `-workers` | Pack mode: conversion goroutines, each with a database connection | 70% of the CPUs halved (a database backend per worker) |
+| `-workers` | Pack mode: conversion goroutines, each with a database connection (`-dump`: none; also the sort's decompressor and encoder threads) | 70% of the CPUs halved (a database backend per worker); `-dump`: 70% of the CPUs |
 | `-ids` | Pack mode: file of entity IDs (`Q…`/`P…`, one per line) instead of every property and the Q range | none |
 | `-checkpoint` | Pack mode: documents between checkpoints | `100000` |
 | `-resume` | Pack mode: continue the interrupted run from its last checkpoint | off |
@@ -52,10 +64,14 @@ The database connection comes from `-dsn` or, when it is empty, from the standar
 | `-strict` | Pack mode: stop at the first anomaly (see below) after a checkpoint, exit code 3 | off |
 | `-anomaly` | Pack mode, `-strict`: anomaly report path (TSV) | `wikigeul-anomaly.tsv` |
 | `-allow` | Pack mode, `-strict`: also treat `kind:reason` as normal (`skipped:…`, `raw:…`, `warn:<rule>`); repeatable, not part of the run's identity | none |
+| `-dump` | Read this Wikidata JSON dump file (`.json`, `.json.gz`, `.json.bz2`) instead of the database (pack mode) | none: database |
+| `-dump-url`, `-dump-sha256`, `-dump-time` | `-dump`: the dump's URL, file SHA-256 (hex) and download time (Unix seconds) recorded in every document | from the file name, `<file>.sha256`, the file's modification time |
+| `-sort-dir` | `-dump`: directory of the sort into key order (runs, `state.json`) | `wikigeul-dumpsort` |
+| `-sort-mem` | `-dump`: MiB of entity JSON per sorted run | `1024` |
 | `-langreg-root` | Archive to read the GEUL Language Registry (spec document `0x0000/0x0000000000000848`) from | `-root` |
 | `-langreg-version` | Version of that spec document to use | `0`: the newest when the run starts |
 
-Strict mode (`-strict`): a run over all of Wikidata must not silently drop what it has never seen. Before a result is written, the writer looks for anomalies: a failed conversion or a panic, an entity the dump lists but cannot load, a skipped value other than a Lexeme (`L…`, forms, senses) or EntitySchema (`E…`) value, a value kept as original text for a reason not met in the validated runs (coordinate precision; time with timezone or bounds; time precision 0–5, millennium, century, Julian decade; BCE or 5+ digit decade; Y-prefixed year; day-precision date that is no day), a reference mismatch, and any `schema.Check` Fact on the document or its version list other than Warn E6. At the first anomalous entity it checkpoints everything before it, writes the anomaly report (`id`, `kind`, `property`, `value` (original, quoted), `reason`, `class`: 문법 부족 / 변환기 미지원 / 데이터 이상 / 기타) and exits 3. `-resume` starts again at that entity: add `-allow kind:reason` if the case is accepted as normal; if the porter must change, its commit changes and the run starts over. A panic is recovered into an error in every mode. After every checkpoint the run prints `progress <time> last=… docs=… session_docs=… rate=… skipped={…} raw={…}`.
+Strict mode (`-strict`): a run over all of Wikidata must not silently drop what it has never seen. Before a result is written, the writer looks for anomalies: a failed conversion or a panic, an entity the dump lists but cannot load, a skipped value other than a Lexeme (`L…`, forms, senses) or EntitySchema (`E…`) value, a value kept as original text for a reason not met in the validated runs (coordinate precision; time with timezone or bounds; time precision 0–5, millennium, century, Julian decade; BCE or 5+ digit decade; Y-prefixed year; day-precision date that is no day), a reference mismatch, and any `schema.Check` Fact on the document or its version list other than Warn E6. At the first anomalous entity it checkpoints everything before it, writes the anomaly report (`id`, `kind`, `property`, `value` (original, quoted), `reason`, `class`: 문법 부족 / 변환기 미지원 / 데이터 이상 / 기타) and exits 3. `-resume` starts again at that entity: add `-allow kind:reason` if the case is accepted as normal; if the porter must change, its commit changes and the run starts over. With `-dump`, a dump line that does not decode as its entity (wikipg would have loaded none) is left out with a note on stderr, and in strict mode is the anomaly `decode` (`-allow decode:덤프 줄 해석 실패`). A panic is recovered into an error in every mode. After every checkpoint the run prints `progress <time> last=… docs=… session_docs=… rate=… skipped={…} raw={…}`.
 
 Language codes: each Wikimedia language code is mapped to a BCP 47 tag; when the GEUL Language Registry numbers the tag (compared without case) the text's language is written as a 1-WORD LANGUAGE-SHORT-CODE, otherwise as a LANGUAGE-BCP47-CODE in canonical case. The registry is not built into the code: it is read once per run from the spec document's ENUMs through the gogeul resolve path, and the version used (`0x0000/0x0000000000000848@n` and its content hash) is printed and recorded in the report's first line.
 
@@ -70,6 +86,7 @@ Detailed rules (in Korean):
 - [docs/conversion.md](docs/conversion.md) — document IDs, record order, value conversion, language codes, property datatypes, sitelinks
 - [docs/provenance.md](docs/provenance.md) — document-level sources, TRANSFORMED-BY, conversion of Wikidata references
 - [docs/database.md](docs/database.md) — tables and columns read from the wikipg schema
+- [docs/dump.md](docs/dump.md) — reading the dump file directly: database ↔ dump JSON mapping, known differences, order (sort and merge), resume, flags, verification
 
 The GEUL grammar itself is specified at [geul.org/grammar](https://geul.org/grammar/).
 
@@ -77,7 +94,8 @@ The GEUL grammar itself is specified at [geul.org/grammar](https://geul.org/gram
 
 ```
 cmd/wikigeul/      command: range loop, property documents, name index, report
-internal/source/   reading a loaded dump (dump, entities, labels, claims, qualifiers, references, sitelinks)
+internal/source/   reading a loaded dump (dump, entities, labels, claims, qualifiers, references, sitelinks), or one dump line as the same entity
+internal/dumpfile/ reading a dump file directly: decompression, entity lines, sorted runs and merge, checkpoints
 internal/port/     value conversion, document building, provenance
 internal/publish/  document names and the name index
 testdata/          database test fixture

@@ -8,7 +8,11 @@ import "fmt"
 // dump (schema, dump_id), the porter and library commits and the GEUL Language
 // Registry version and content hash (LangDoc) of run c. The documents depend
 // on the dump, the commits and that registry version only; the range says
-// which documents this report covers.
+// which documents this report covers. A dump read directly (-dump) is named
+// by c.Source (file name and SHA-256) instead of schema and dump_id.
 func runLine(c config) string {
+	if c.DumpFile != "" {
+		return fmt.Sprintf("# wikigeul -from %d -to %d -dump %s -commit %s -lib-commit %s -langreg %s", c.From, c.To, c.Source, c.Commit, c.LibCommit, c.LangDoc)
+	}
 	return fmt.Sprintf("# wikigeul -from %d -to %d -schema %s -dump-id %d -commit %s -lib-commit %s -langreg %s", c.From, c.To, c.Schema, c.Dump, c.Commit, c.LibCommit, c.LangDoc)
 }

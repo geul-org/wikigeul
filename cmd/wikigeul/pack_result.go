@@ -10,7 +10,9 @@ import (
 
 // packResult is job's output: the document ID, its version list (slot 0) and
 // version 1 encoded for the stream, the raw document (for the TRANSFORMED-BY
-// check), the report; Missing when the dump lost the entity, Err on failure
+// check), the report; Missing when the dump lost the entity, Dropped (the
+// reason) when its line in a dump read directly does not decode (dropError;
+// wikipg would have loaded no entity), Err on failure
 // (a panic included); Facts, in a strict run, the schema.Check findings on
 // both records (checkFacts).
 type packResult struct {
@@ -21,6 +23,7 @@ type packResult struct {
 	Raw     []byte
 	Rep     port.Report
 	Missing bool
+	Dropped string
 	Err     error
 	Facts   []checkFact
 }

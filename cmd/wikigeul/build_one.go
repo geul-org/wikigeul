@@ -1,5 +1,5 @@
 //ff:func feature=cli type=command control=sequence
-//ff:what buildOne — load one entity from the dump and build its document with fresh LOCAL IDs (pack mode); false when the dump lacks it
+//ff:what buildOne — load one entity (database or dump line) and build its document with fresh LOCAL IDs (pack mode); false when the dump lacks it
 package main
 
 import (
@@ -10,16 +10,15 @@ import (
 	"github.com/geul-org/gogeul/pkg/delta"
 
 	"github.com/geul-org/wikigeul/internal/port"
-	"github.com/geul-org/wikigeul/internal/source"
 )
 
-// buildOne loads entity job (source.LoadEntity) and builds its document
+// buildOne loads entity job (loadJob: the database, or its dump line) and builds its document
 // (port.BuildDoc) with prov and the run's registry. A pack-mode run writes a
 // new set, so no earlier version lends its IDs: they start from 1, as for a
 // document never published in directory mode.
 func buildOne(db *sql.DB, c config, prov port.Provenance, job packJob) ([]byte, port.Report, bool, error) {
 	id := string(job.Kind) + strconv.FormatUint(job.Num, 10)
-	e, ok, err := source.LoadEntity(db, source.Store{Schema: c.Schema, Dump: c.Dump, RefOrder: c.RefOrder}, id)
+	e, ok, err := loadJob(db, c, job)
 	if err != nil || !ok {
 		return nil, port.Report{ID: id, Missing: err == nil}, false, err
 	}

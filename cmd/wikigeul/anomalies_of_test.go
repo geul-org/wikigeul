@@ -24,6 +24,9 @@ func TestAnomaliesOf(t *testing.T) {
 	if len(got) != 3 || got[0].Reason != "빈 값" || got[1].Kind != "ref_mismatch" || got[2].Kind != "check" {
 		t.Fatalf("%+v", got)
 	}
+	if got := anomaliesOf(packResult{Rep: port.Report{ID: "Q9"}, Dropped: "bad line"}, nil); len(got) != 1 || got[0].Kind != "decode" || got[0].Value != "bad line" {
+		t.Fatalf("dropped: %+v", got)
+	}
 	if got := anomaliesOf(packResult{Rep: port.Report{ID: "Q8"}}, nil); len(got) != 0 {
 		t.Fatalf("clean: %+v", got)
 	}

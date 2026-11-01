@@ -21,11 +21,15 @@ import (
 // reference join (statement_reference ⋈ reference_snak) and JIT-compiles it,
 // about 160 ms per entity against 0.5 ms without (2026-10-27). When the
 // schema has reference_snak_order (source.Dump.RefOrder) every reference
-// occurrence keeps its own snak order; the run says which on stdout.
+// occurrence keeps its own snak order; the run says which on stdout. With
+// -dump there is no database: runDump reads the dump file.
 func run(args []string) error {
 	c, err := parseFlags(args)
 	if err != nil {
 		return err
+	}
+	if c.DumpFile != "" {
+		return runDump(c)
 	}
 	conn, err := pq.NewConnector(c.DSN)
 	if err != nil {

@@ -24,7 +24,11 @@ func TestParseFlags(t *testing.T) {
 	if c, _ := parseFlags([]string{"-commit", a, "-lib-commit", b}); c.Strict || c.Anomaly != "wikigeul-anomaly.tsv" || c.Allow != nil {
 		t.Fatalf("strict defaults: %+v", c)
 	}
-	for _, args := range [][]string{{}, {"-commit", a}, {"-commit", "abc", "-lib-commit", b}, {"-commit", a, "-lib-commit", b, "-from", "0"}, {"-commit", a, "-lib-commit", b, "-from", "9", "-to", "5"}, {"-nope"}, {"-commit", a, "-lib-commit", b, "-langs", "en"}, {"-commit", a, "-lib-commit", b, "-dump-id", "0"}, {"-commit", a, "-lib-commit", b, "-langreg-version", "4294967296"}, {"-commit", a, "-lib-commit", b, "-out", "zip"}, {"-commit", a, "-lib-commit", b, "-workers", "0"}, {"-commit", a, "-lib-commit", b, "-checkpoint", "0"}} {
+	c, err = parseFlags([]string{"-commit", a, "-lib-commit", b, "-dump", "d.json", "-dump-url", "u", "-dump-sha256", "ff", "-dump-time", "7", "-sort-dir", "s", "-sort-mem", "9"})
+	if err != nil || c.DumpFile != "d.json" || c.DumpURL != "u" || c.DumpSHA256 != "ff" || c.DumpTime != 7 || c.SortDir != "s" || c.SortMem != 9 || c.Workers != defaultDumpWorkers() {
+		t.Fatalf("dump: %+v %v", c, err)
+	}
+	for _, args := range [][]string{{}, {"-commit", a}, {"-commit", "abc", "-lib-commit", b}, {"-commit", a, "-lib-commit", b, "-from", "0"}, {"-commit", a, "-lib-commit", b, "-from", "9", "-to", "5"}, {"-nope"}, {"-commit", a, "-lib-commit", b, "-langs", "en"}, {"-commit", a, "-lib-commit", b, "-dump-id", "0"}, {"-commit", a, "-lib-commit", b, "-langreg-version", "4294967296"}, {"-commit", a, "-lib-commit", b, "-out", "zip"}, {"-commit", a, "-lib-commit", b, "-workers", "0"}, {"-commit", a, "-lib-commit", b, "-checkpoint", "0"}, {"-commit", a, "-lib-commit", b, "-dump", "d.json", "-out", "dir"}} {
 		if _, err := parseFlags(args); err == nil {
 			t.Fatalf("%v: want error", args)
 		}

@@ -13,7 +13,8 @@ import (
 // parseFlags reads args into a config. -commit and -lib-commit (the full git
 // object IDs of the porter and the GEUL library, written in every document's
 // TRANSFORMED-BY) are required and must be well formed (port.CommitDigest).
-// -schema and -dump-id name the loaded dump (default wikidata, 1).
+// -schema and -dump-id name the loaded dump (default wikidata, 1); -dump
+// reads a dump file instead (checkDumpFlags).
 func parseFlags(args []string) (config, error) {
 	fs := flag.NewFlagSet("wikigeul", flag.ContinueOnError)
 	var c config
@@ -41,6 +42,12 @@ func parseFlags(args []string) (config, error) {
 		c.Allow = append(c.Allow, v)
 		return nil
 	})
+	fs.StringVar(&c.DumpFile, "dump", "", "Wikidata JSON dump (.json, .json.gz, .json.bz2) to read directly instead of the database (pack mode)")
+	fs.StringVar(&c.DumpURL, "dump-url", "", "-dump: URL recorded as the dump's source (empty: dumps.wikimedia.org URL from the file name's date)")
+	fs.StringVar(&c.DumpSHA256, "dump-sha256", "", "-dump: the file's SHA-256 in hex (empty: from <file>.sha256); the file is checked against it")
+	fs.Int64Var(&c.DumpTime, "dump-time", 0, "-dump: when the file was downloaded, Unix seconds (0: its modification time)")
+	fs.StringVar(&c.SortDir, "sort-dir", "wikigeul-dumpsort", "-dump: directory of the sort into document key order and its checkpoints")
+	fs.Int64Var(&c.SortMem, "sort-mem", 1024, "-dump: MiB of entity JSON held per sorted run")
 	var langVer uint
 	fs.UintVar(&langVer, "langreg-version", 0, "version of the LANGUAGE-SHORT-CODE spec document to use (0: the newest when the run starts)")
 	if err := fs.Parse(args); err != nil {
@@ -70,6 +77,9 @@ func parseFlags(args []string) (config, error) {
 	}
 	if c.From == 0 || c.From > c.To {
 		return config{}, errors.New("wikigeul: need 1 <= -from <= -to")
+	}
+	if err := checkDumpFlags(&c, fs); err != nil {
+		return config{}, err
 	}
 	return c, nil
 }

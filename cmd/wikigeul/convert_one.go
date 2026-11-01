@@ -4,6 +4,7 @@ package main
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"runtime/debug"
 
@@ -16,7 +17,8 @@ import (
 // convertOne builds job's document (buildOne), its version list as
 // directory mode's Overwrite would write it but recorded at c.RecordedAt
 // (resolve.FirstVersionList), and encodes both (s.Encode, safe on many
-// goroutines). A strict run also checks both (checkFacts). A panic while
+// goroutines). A dump line that does not decode (dropError) is Dropped, not
+// an error. A strict run also checks both (checkFacts). A panic while
 // converting is recovered into r.Err with its stack, so the writer stops
 // the run in order (a strict run after a checkpoint) instead of the
 // process dying between checkpoints.
@@ -29,6 +31,9 @@ func convertOne(db *sql.DB, c config, prov port.Provenance, s *pack.Stream, job 
 	}()
 	b, rep, ok, err := buildOne(db, c, prov, job)
 	r.Rep, r.Missing, r.Err = rep, !ok && err == nil, err
+	if de := (dropError{}); errors.As(err, &de) {
+		r.Dropped, r.Err = de.Error(), nil
+	}
 	if !ok {
 		return r
 	}

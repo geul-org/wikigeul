@@ -7,7 +7,9 @@ package main
 // commits (TRANSFORMED-BY), registry version, dump, range or ID list, the
 // RECORDED-AT of the version lists, the sampled dictionary — must match on
 // resume, or the resumed documents would differ from the ones already
-// written. Kind/Num is the last entity put, Docs how many documents, Report
+// written. Source names a dump read directly (-dump: file name and SHA-256)
+// and is empty for the loaded database, so checkpoints written before it
+// existed still match. Kind/Num is the last entity put, Docs how many documents, Report
 // the report file's size at the checkpoint.
 type packProgress struct {
 	Commit     string
@@ -18,6 +20,7 @@ type packProgress struct {
 	From       uint64
 	To         uint64
 	IDs        string
+	Source     string `json:",omitempty"`
 	RecordedAt int64
 	Kind       byte
 	Num        uint64
