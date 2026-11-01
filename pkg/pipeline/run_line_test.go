@@ -5,8 +5,8 @@ package pipeline
 import "testing"
 
 func TestRunLine(t *testing.T) {
-	got := RunLine(Config{From: 1, To: 10000, Schema: "wikidata", Dump: 1, Commit: "aa", LibCommit: "bb", LangDoc: "0x0000/0x0000000000000848@2 0x26fb"})
-	if got != "# wikigeul -from 1 -to 10000 -schema wikidata -dump-id 1 -commit aa -lib-commit bb -langreg 0x0000/0x0000000000000848@2 0x26fb" {
+	got := RunLine(Config{From: 1, To: 10000, Schema: "wikidata", Dump: 1, Commit: "aa", LibCommit: "bb", LangDoc: "0x0000/0x0000000000000848@1 0x26fb"})
+	if got != "# wikigeul -from 1 -to 10000 -schema wikidata -dump-id 1 -commit aa -lib-commit bb -langreg 0x0000/0x0000000000000848@1 0x26fb" {
 		t.Fatalf("got %q", got)
 	}
 	got = RunLine(Config{From: 1, To: 2, Source: "x.json sha256:ff", Commit: "aa", LibCommit: "bb", LangDoc: "l"})
