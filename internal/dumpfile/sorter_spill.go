@@ -10,7 +10,7 @@ import (
 )
 
 // spill sorts the held records (compareRecords) and writes them as the next
-// run (writeRun), then saves the state with the run, the lines and bytes
+// run (writeRun, with as many threads as the guard allows now), then saves the state with the run, the lines and bytes
 // read and, for a plain file, the SHA-256 state at that offset — a
 // checkpoint every kept line before which is in a run. It logs a progress
 // line.
@@ -18,7 +18,7 @@ func (s *sorter) spill() error {
 	slices.SortFunc(s.recs, compareRecords)
 	if len(s.recs) > 0 {
 		name := fmt.Sprintf("run-%06d.zst", s.st.Next)
-		if err := writeRun(filepath.Join(s.c.Dir, name), s.recs, s.c.Threads); err != nil {
+		if err := writeRun(filepath.Join(s.c.Dir, name), s.recs, s.c.Guard.Active(s.c.Threads)); err != nil {
 			return err
 		}
 		s.st.Runs = append(s.st.Runs, name)

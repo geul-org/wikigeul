@@ -4,8 +4,10 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/geul-org/wikigeul/internal/dumpfile"
+	"github.com/geul-org/wikigeul/pkg/memguard"
 	"github.com/geul-org/wikigeul/pkg/pipeline"
 )
 
@@ -15,12 +17,17 @@ import (
 // snak order (the dump has it), and the run is named by the file and its
 // SHA-256 (c.Source, part of the checkpoint identity). The dump is sorted
 // into document key order first (sortDump: Stream.Put needs ascending keys
-// and a dump is in no ID order), then converted (runDumpPack).
+// and a dump is in no ID order), then converted (runDumpPack). The memory
+// guard watches both (memguard.Start).
 func runDump(c config) error {
 	info, err := dumpfile.InfoOf(c.DumpFile, c.DumpURL, c.DumpSHA256, c.DumpTime)
 	if err != nil {
 		return err
 	}
+	if c.Guard, err = memguard.Start(c.Mem, c.Workers, os.Stdout); err != nil {
+		return err
+	}
+	defer c.Guard.Close()
 	if err := pipeline.LoadLanguages(&c.Config); err != nil {
 		return err
 	}
@@ -35,6 +42,9 @@ func runDump(c config) error {
 	st, err := sortDump(c, info, ids, idsHash)
 	if err != nil {
 		return fmt.Errorf("dump sort in %s: %w", c.SortDir, err)
+	}
+	if err := c.Guard.Err(); err != nil {
+		return err
 	}
 	return runDumpPack(c, dumpProvenance(info, c.Commit, c.LibCommit), st, ids, idsHash)
 }

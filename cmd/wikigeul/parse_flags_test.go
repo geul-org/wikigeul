@@ -1,5 +1,5 @@
 //ff:func feature=cli type=command control=iteration dimension=1
-//ff:what TestParseFlags — defaults keep the checkpoint identity and the dump's workers; dump flags and overrides; no -dump, a short commit, a zero -sort-mem and the flags that moved to wikipgeul export-geul fail
+//ff:what TestParseFlags — defaults keep the checkpoint identity and the dump's workers; dump flags and overrides; no -dump, a short commit, a zero -sort-mem and the flags that moved to wikipg export-geul fail
 package main
 
 import (

@@ -19,7 +19,9 @@ import (
 // result (a dump line that does not decode) writes nothing, not even a report
 // line — the loaded database would not list the entity — and is told on
 // stderr. Every
-// `every` documents it checkpoints and prints a progress line.
+// `every` documents it checkpoints and prints a progress line, and earlier
+// when the guard has entered caution since the last time (checkpointDue), so
+// that what is done is safe while memory is short.
 func (w *packWriter) put(r packResult) error {
 	if w.strict {
 		if as := anomaliesOf(r, w.allow); len(as) > 0 {
@@ -55,7 +57,7 @@ func (w *packWriter) put(r packResult) error {
 	w.prog.Docs++
 	addCounts(w.skipped, r.Rep.Skipped)
 	addCounts(w.raw, r.Rep.Raw)
-	if w.since++; w.since >= w.every {
+	if w.since++; w.checkpointDue() {
 		if err := w.checkpoint(); err != nil {
 			return err
 		}

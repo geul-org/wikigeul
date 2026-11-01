@@ -2,9 +2,13 @@
 //ff:what BindFlags — define the flags both conversion commands share and return the check to call after parsing
 package pipeline
 
-import "flag"
+import (
+	"flag"
 
-// BindFlags defines on fs the flags wikigeul and wikipgeul export-geul share,
+	"github.com/geul-org/wikigeul/pkg/memguard"
+)
+
+// BindFlags defines on fs the flags wikigeul and wikipg export-geul share,
 // filling c, with -workers defaulting to workers and described by usage. The
 // returned check (checkFlags) runs after fs.Parse.
 func BindFlags(fs *flag.FlagSet, c *Config, workers int, usage string) func() error {
@@ -29,5 +33,11 @@ func BindFlags(fs *flag.FlagSet, c *Config, workers int, usage string) func() er
 	})
 	var langVer uint
 	fs.UintVar(&langVer, "langreg-version", 0, "version of the LANGUAGE-SHORT-CODE spec document to use (0: the newest when the run starts)")
-	return func() error { return checkFlags(c, langVer) }
+	checkMem := memguard.BindFlags(fs, &c.Mem)
+	return func() error {
+		if err := checkMem(); err != nil {
+			return err
+		}
+		return checkFlags(c, langVer)
+	}
 }

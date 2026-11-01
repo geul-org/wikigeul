@@ -5,7 +5,7 @@ package pipeline
 import "github.com/geul-org/wikigeul/pkg/port"
 
 // Tools is the provenance's tools as geul.org term definition documents
-// (GEUL-ORG): wikigeul (document 1, the converter, also when wikipgeul
+// (GEUL-ORG): wikigeul (document 1, the converter, also when wikipg
 // export-geul runs it) at commit and the GEUL library (document 2, gogeul) at
 // libCommit. The loader is not a tool of the document: docs/provenance.md.
 func Tools(commit, libCommit string) []port.Tool {

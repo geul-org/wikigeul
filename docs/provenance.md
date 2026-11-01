@@ -10,7 +10,7 @@ HEAD에 문서 전체의 근거 Edge SOURCE(Target `#0`) 둘을 둔다.
 2. **덤프 파일:** 원천 = `REFERENCE-NODE #d #f <dump.url>`로 정의한 LOCAL. 그 SOURCE에 `QUALIFIER P4092`(파일 SHA-256, `dump.sha256`, SHA-256-DIGEST; 모르면 생략)와 `QUALIFIER P813`(받은 시각 `dump.downloaded_at`, POSIX-TIMESTAMP-SECONDS).
 
 - 판과 덤프를 SOURCE 둘로 나눈 근거: 판은 내용의 원천이고(영구 주소로 같은 내용을 다시 받을 수 있다) 덤프는 그 판을 받은 파일이다. 파일 해시와 받은 시각은 덤프 파일에 관한 인용 쪽 성질이라 덤프 SOURCE의 QUALIFIER다. 한 SOURCE에 섞으면 해시가 판의 해시처럼 읽힌다. 덤프 SOURCE는 같은 실행의 모든 문서에서 같은 바이트다.
-- 실행 옵션은 문서에 적지 않는다. 문서 내용을 바꾸는 옵션이 없다(wikipgeul `export-geul`의 `-schema`·`-dump-id`는 로컬 DB 위치이고 덤프는 SOURCE가 고정한다). 범위·DB·커밋은 실행 보고서 첫 줄에 남는다.
+- 실행 옵션은 문서에 적지 않는다. 문서 내용을 바꾸는 옵션이 없다(wikipg `export-geul`의 `-schema`·`-dump-id`는 로컬 DB 위치이고 덤프는 SOURCE가 고정한다). 범위·DB·커밋은 실행 보고서 첫 줄에 남는다.
 
 ## 변환 도구 (TRANSFORMED-BY)
 
@@ -18,7 +18,7 @@ TRANSFORMED-BY 둘을 둔다. 도구 Reference는 geul.org 용어 정의 문서(
 
 | 도구 | geul.org 용어 정의 문서 | 버전 |
 |---|---|---|
-| 변환 도구 wikigeul (이 저장소. wikipgeul `export-geul`로 돌려도 변환 코드는 여기다) | `0x0001000000000001` | `-commit`(wikigeul 커밋) |
+| 변환 도구 wikigeul (이 저장소. wikipg `export-geul`로 돌려도 변환 코드는 여기다) | `0x0001000000000001` | `-commit`(wikigeul 커밋) |
 | GEUL 라이브러리 [gogeul](https://github.com/geul-org/gogeul) | `0x0001000000000002` | `-lib-commit` |
 
 - 적재 도구(wikipgeul)는 적지 않는다. wikipgeul는 덤프를 무손실로 저장하므로 문서는 덤프·wikigeul·라이브러리로 정해진다. 적재 도구 커밋은 DB `dump.loader_commit`에 남는다.

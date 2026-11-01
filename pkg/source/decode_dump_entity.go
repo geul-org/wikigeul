@@ -1,5 +1,5 @@
 //ff:func feature=source type=loader control=sequence
-//ff:what DecodeDumpEntity — one Wikidata JSON dump line as the Entity wikipgeul export-geul reads after wikipgeul loaded that line
+//ff:what DecodeDumpEntity — one Wikidata JSON dump line as the Entity wikipg export-geul reads after wikipgeul loaded that line
 package source
 
 import (

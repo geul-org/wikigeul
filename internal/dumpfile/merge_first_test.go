@@ -20,7 +20,7 @@ func TestMergeFirst(t *testing.T) {
 	}
 	first := filepath.Join(dir, st.Runs[0])
 	c := SortConfig{Dir: dir, Threads: 1, Log: io.Discard}
-	if err := mergeFirst(c, st); err != nil || len(st.Runs) != 2 || st.Runs[1] != fmt.Sprintf("run-%06d.zst", mergeFanIn+1) {
+	if err := mergeFirst(c, st, mergeFanIn); err != nil || len(st.Runs) != 2 || st.Runs[1] != fmt.Sprintf("run-%06d.zst", mergeFanIn+1) {
 		t.Fatalf("%v %v", st.Runs, err)
 	}
 	if _, err := os.Stat(first); err == nil {
@@ -30,7 +30,7 @@ func TestMergeFirst(t *testing.T) {
 		t.Fatal("not saved")
 	}
 	st.Runs = make([]string, mergeFanIn)
-	if err := mergeFirst(c, st); err == nil {
+	if err := mergeFirst(c, st, mergeFanIn); err == nil {
 		t.Fatal("missing runs: want an error")
 	}
 	ro := t.TempDir()
@@ -41,7 +41,7 @@ func TestMergeFirst(t *testing.T) {
 		st.Runs = append(st.Runs, name)
 	}
 	os.MkdirAll(filepath.Join(ro, "state.json", "x"), 0o755)
-	if err := mergeFirst(SortConfig{Dir: ro, Threads: 1, Log: io.Discard}, st); err == nil {
+	if err := mergeFirst(SortConfig{Dir: ro, Threads: 1, Log: io.Discard}, st, mergeFanIn); err == nil {
 		t.Fatal("state not saved: want an error")
 	}
 }

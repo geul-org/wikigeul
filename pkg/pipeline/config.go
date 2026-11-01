@@ -2,7 +2,10 @@
 //ff:what Config — what a conversion run shares between its inputs (the database through wikipgeul, or a dump file through wikigeul): archive root, QID range, commits, language registry, report, pack writing and strict mode
 package pipeline
 
-import "github.com/geul-org/wikigeul/pkg/port"
+import (
+	"github.com/geul-org/wikigeul/pkg/memguard"
+	"github.com/geul-org/wikigeul/pkg/port"
+)
 
 // Config is one conversion run, whichever input it reads: the archive root
 // (geul-dev draft/geul-org/artifacts/geul) whose .well-known/geul receives
@@ -10,7 +13,7 @@ import "github.com/geul-org/wikigeul/pkg/port"
 // document per entity holds them all), the porter and GEUL library commits
 // recorded in TRANSFORMED-BY and where the report goes. Schema and Dump name
 // the loaded dump in the checkpoint identity and in the report's first line
-// (wikipgeul export-geul -schema, -dump-id); wikigeul keeps their defaults, so a
+// (wikipg export-geul -schema, -dump-id); wikigeul keeps their defaults, so a
 // checkpoint written before the two paths split still matches. LangRoot and
 // LangVer say where and which version of the LANGUAGE-SHORT-CODE codec spec
 // document to read the GEUL Language Registry from (LangRoot "" is Root,
@@ -27,7 +30,10 @@ import "github.com/geul-org/wikigeul/pkg/port"
 // anomaly report Anomaly; Allow adds "kind:reason" entries ("raw:time: 0년",
 // "warn:E7") to the normal list for a resumed run. Source is not a flag: a
 // dump read directly is named there by file name and SHA-256, part of the
-// checkpoint identity, and empty for the loaded database.
+// checkpoint identity, and empty for the loaded database. Mem are the memory
+// limits of the -mem- flags and Guard the running watch over them (memguard.Start;
+// nil: no guard); neither is part of the run's identity, since memory changes
+// when work happens, not what is written.
 type Config struct {
 	Root       string
 	From       uint64
@@ -51,4 +57,6 @@ type Config struct {
 	Anomaly    string
 	Allow      []string
 	Source     string
+	Mem        memguard.Limits
+	Guard      *memguard.Guard
 }

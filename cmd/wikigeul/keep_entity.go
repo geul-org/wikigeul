@@ -5,7 +5,7 @@ package main
 import "github.com/geul-org/wikigeul/pkg/pipeline"
 
 // keepEntity decides by letter and number which entities of the dump the run
-// converts, as wikipgeul export-geul lists them from the database: with an ID list,
+// converts, as wikipg export-geul lists them from the database: with an ID list,
 // exactly the listed ones; else every property (up to 2^56−1, its
 // bound) and the items Q<From>…Q<To>. Other kinds (Lexemes, Entity Schemas)
 // are never converted.

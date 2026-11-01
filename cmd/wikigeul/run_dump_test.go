@@ -22,7 +22,7 @@ func TestRunDump(t *testing.T) {
 	a := strings.Repeat("a", 40)
 	args := func(root string, extra ...string) []string {
 		return append([]string{"-root", root, "-langreg-root", reg, "-from", "1", "-to", "100", "-commit", a, "-lib-commit", a, "-workers", "2",
-			"-checkpoint", "1", "-recorded-at", "1800000000", "-samples", "2", "-dump", dump, "-sort-dir", filepath.Join(root, "sort")}, extra...)
+			"-checkpoint", "1", "-recorded-at", "1800000000", "-samples", "2", "-mem-off", "-dump", dump, "-sort-dir", filepath.Join(root, "sort")}, extra...)
 	}
 	root := t.TempDir()
 	rep := filepath.Join(root, "r.tsv")

@@ -1,5 +1,5 @@
 //ff:func feature=pipeline type=command control=iteration dimension=1
-//ff:what TestBindFlags — defaults and overrides (registry root and version too); a missing or short commit, a bad range, an unknown flag, a registry version over 32 bits and zero workers or checkpoint fail
+//ff:what TestBindFlags — defaults and overrides (registry root and version too); a missing or short commit, a bad range, an unknown flag, a registry version over 32 bits zero workers or checkpoint and memory limits that make no sense fail
 package pipeline
 
 import (
@@ -31,7 +31,7 @@ func TestBindFlags(t *testing.T) {
 	if err != nil || !c.Strict || c.Anomaly != "x.tsv" || len(c.Allow) != 2 || c.Allow[1] != "warn:E7" {
 		t.Fatalf("strict: %+v %v", c, err)
 	}
-	for _, args := range [][]string{{}, {"-commit", a}, {"-commit", "abc", "-lib-commit", b}, {"-commit", a, "-lib-commit", b, "-from", "0"}, {"-commit", a, "-lib-commit", b, "-from", "9", "-to", "5"}, {"-nope"}, {"-commit", a, "-lib-commit", b, "-langreg-version", "4294967296"}, {"-commit", a, "-lib-commit", b, "-workers", "0"}, {"-commit", a, "-lib-commit", b, "-checkpoint", "0"}} {
+	for _, args := range [][]string{{}, {"-commit", a}, {"-commit", "abc", "-lib-commit", b}, {"-commit", a, "-lib-commit", b, "-from", "0"}, {"-commit", a, "-lib-commit", b, "-from", "9", "-to", "5"}, {"-nope"}, {"-commit", a, "-lib-commit", b, "-langreg-version", "4294967296"}, {"-commit", a, "-lib-commit", b, "-workers", "0"}, {"-commit", a, "-lib-commit", b, "-checkpoint", "0"}, {"-commit", a, "-lib-commit", b, "-mem-min-free", "0"}} {
 		if _, err := parse(args...); err == nil {
 			t.Fatalf("%v: want error", args)
 		}

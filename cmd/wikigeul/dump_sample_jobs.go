@@ -11,7 +11,7 @@ import (
 // lines: the first -samples Q entities of the ID list (one the dump lacks
 // without a line, which buildAll skips as the database path does), else the
 // first -samples Q entities the sort holds — the dump's items from Q<From> in
-// number order, as wikipgeul export-geul lists them. A line that does not
+// number order, as wikipg export-geul lists them. A line that does not
 // decode is no entity there (sampleJob). The slice is never nil,
 // so dictSamples takes it as its list.
 func dumpSampleJobs(c config, st dumpfile.State, ids []pipeline.PackJob) ([]pipeline.PackJob, error) {

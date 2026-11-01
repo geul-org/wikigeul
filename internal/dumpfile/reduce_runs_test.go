@@ -30,7 +30,7 @@ func TestReduceRuns(t *testing.T) {
 	if n != mergeFanIn+2 {
 		t.Fatalf("%d records", n)
 	}
-	st.Runs = append(st.Runs, make([]string, mergeFanIn)...)
+	st.Done, st.Runs = false, append(st.Runs, make([]string, mergeFanIn)...)
 	if err := reduceRuns(c, st); err == nil {
 		t.Fatal("missing runs: want an error")
 	}

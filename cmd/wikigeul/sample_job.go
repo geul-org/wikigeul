@@ -9,7 +9,7 @@ import "github.com/geul-org/wikigeul/pkg/pipeline"
 // wikipgeul would not have loaded. Taken from the list (listed) it stays, with
 // no line, so buildAll skips it as missing; taken from the sorted dump it is
 // not counted (false) and the next entity is sampled instead, as
-// wikipgeul export-geul would not list it.
+// wikipg export-geul would not list it.
 func sampleJob(j pipeline.PackJob, listed bool) (pipeline.PackJob, bool) {
 	_, _, err := decodeJob(j)
 	switch {

@@ -15,9 +15,9 @@
   | Lexeme L | `0x4C` | L42 → `0x4c0000000000002a` (예약. Lexeme 문서는 아직 만들지 않는다) |
   | Entity Schema E | `0x45` | E10 → `0x450000000000000a` (예약) |
 
-- **이름 색인(wikipgeul `export-geul -out dir`):** Issuer 디렉터리의 `documents.geul` 하나. 이름은 소문자 종류 글자 + 번호다(`q42`, `p31`). 색인은 이번 실행분과 그 Issuer 디렉터리에 이미 공표된 문서를 모두 담는다(범위를 나눠 실행해도 앞 실행의 이름이 지워지지 않는다).
+- **이름 색인(wikipg `export-geul -out dir`):** Issuer 디렉터리의 `documents.geul` 하나. 이름은 소문자 종류 글자 + 번호다(`q42`, `p31`). 색인은 이번 실행분과 그 Issuer 디렉터리에 이미 공표된 문서를 모두 담는다(범위를 나눠 실행해도 앞 실행의 이름이 지워지지 않는다).
 - Q·P를 가리키는 Reference(WIKIDATA-QID·PID)는 문서 위치와 상관없다.
-- **출력:** pack 모드다(아래 "pack 모드"). 디렉터리 모드는 DB 경로에만 있는 시험용이다(wikipgeul `export-geul -out dir`).
+- **출력:** pack 모드다(아래 "pack 모드"). 디렉터리 모드는 DB 경로에만 있는 시험용이다(wikipg `export-geul -out dir`).
 - **실행 순서(디렉터리 모드):** Q 범위를 먼저 옮기고, 그 문서들이 쓴 속성(Predicate, 값이 속성 개체인 것)을 이어서 옮긴 뒤 `documents.geul`을 쓴다.
 - **공표(디렉터리 모드):** `resolve.Dir.Overwrite`로 실행할 때마다 v1을 덮어쓰고 버전 목록도 v1 하나만 둔다. 내용이 같으면 아무 파일도 바꾸지 않는다.
 

@@ -18,10 +18,12 @@ import (
 // RECORDED-AT) — a resumed run that differed would mix documents. Otherwise
 // it starts a new set: zstd with Workers concurrent encoders and a
 // dictionary trained on dictSamples (samples lists its entities, load reads
-// them; neither is touched on resume), created at RECORDED-AT.
+// them; neither is touched on resume), created at RECORDED-AT. The guard
+// sizes the compressor's encoders by the active workers, paces Close and
+// picks its merge width (streamOptions).
 func OpenPackStream(set string, c Config, prov port.Provenance, load Loader, samples func() ([]PackJob, error), idsHash string) (*pack.Stream, PackProgress, error) {
 	want := progressOf(c, idsHash)
-	o := pack.StreamOptions{Build: pack.BuildOptions{Codec: &pack.Zstd{Workers: c.Workers}}, Issuers: []string{"0x00010000"}, Created: c.RecordedAt}
+	o := streamOptions(c)
 	if c.Resume {
 		s, err := pack.ResumeStream(set, o)
 		if err != nil {
@@ -37,6 +39,7 @@ func OpenPackStream(set string, c Config, prov port.Provenance, load Loader, sam
 		}
 		return s, p, nil
 	}
+	c.Guard.SetPhase("dictionary")
 	docs, err := dictSamples(load, c, prov, samples)
 	if err != nil {
 		return nil, want, fmt.Errorf("dictionary samples: %w", err)

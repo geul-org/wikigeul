@@ -24,7 +24,7 @@ func newPackWriter(s *pack.Stream, c Config, p PackProgress) (*packWriter, error
 		return nil, err
 	}
 	w := &packWriter{s: s, rep: f, w: bufio.NewWriterSize(f, 1<<20), prog: p, every: c.Every, pending: map[int64]packResult{},
-		strict: c.Strict, allow: allowSet(c.Allow), anomaly: c.Anomaly, run: RunLine(c), skipped: map[string]int{}, raw: map[string]int{}, start: time.Now(), docs0: p.Docs}
+		strict: c.Strict, allow: allowSet(c.Allow), anomaly: c.Anomaly, run: RunLine(c), skipped: map[string]int{}, raw: map[string]int{}, start: time.Now(), docs0: p.Docs, guard: c.Guard}
 	fresh := p.Docs == 0 && p.Kind == 0
 	if c.Report != "" {
 		err = f.Truncate(map[bool]int64{true: 0, false: p.Report}[fresh])

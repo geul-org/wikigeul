@@ -10,7 +10,9 @@ package pipeline
 // written. Source names a dump read directly (-dump: file name and SHA-256)
 // and is empty for the loaded database, so checkpoints written before it
 // existed still match. Kind/Num is the last entity put, Docs how many documents, Report
-// the report file's size at the checkpoint.
+// the report file's size at the checkpoint. Drained is set by the checkpoint
+// made just before the stream closes: every entity is in, so a resumed run
+// has none left to list.
 type PackProgress struct {
 	Commit     string
 	LibCommit  string
@@ -26,4 +28,5 @@ type PackProgress struct {
 	Num        uint64
 	Docs       int64
 	Report     int64
+	Drained    bool `json:",omitempty"`
 }

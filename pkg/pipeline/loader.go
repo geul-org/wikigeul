@@ -5,7 +5,7 @@ package pipeline
 import "github.com/geul-org/wikigeul/pkg/source"
 
 // Loader reads job's entity as source.Entity, the one input port.BuildDoc
-// converts: from the loaded database (wikipgeul export-geul, one Loader per
+// converts: from the loaded database (wikipg export-geul, one Loader per
 // worker with its own connection) or from its line of a dump read directly
 // (wikigeul). Both give the same Entity for the same entity (docs/dump.md),
 // which is why everything after it is the same code. false, with no error,

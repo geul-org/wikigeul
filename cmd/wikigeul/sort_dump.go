@@ -21,5 +21,5 @@ func sortDump(c config, info dumpfile.Info, ids []pipeline.PackJob, idsHash stri
 		filter = "ids sha256:" + idsHash
 	}
 	return dumpfile.Sort(dumpfile.SortConfig{Info: info, Dir: c.SortDir, Mem: c.SortMem << 20, Threads: c.Workers,
-		Filter: filter, Keep: keepEntity(c, ids), Log: os.Stdout})
+		Filter: filter, Keep: keepEntity(c, ids), Log: os.Stdout, Guard: c.Guard})
 }

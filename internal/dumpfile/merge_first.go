@@ -1,5 +1,5 @@
 //ff:func feature=dumpfile type=writer control=sequence
-//ff:what mergeFirst — merge the first mergeFanIn runs into a new run at the end, save the state, remove the merged runs
+//ff:what mergeFirst — merge the first n runs into a new run at the end, save the state, remove the merged runs
 package dumpfile
 
 import (
@@ -8,17 +8,17 @@ import (
 	"slices"
 )
 
-// mergeFirst merges the first mergeFanIn runs of st into the run numbered
+// mergeFirst merges the first n runs of st into the run numbered
 // st.Next (mergeRuns), which goes to the end of the list, saves the state
-// and only then removes the merged files. Interrupted before the save, the
-// same merge is done again into the same name.
-func mergeFirst(c SortConfig, st *State) error {
-	ins := slices.Clone(st.Runs[:mergeFanIn])
+// and only then removes the merged files. Interrupted before the save, by a
+// crash or the guard, the same merge is done again into the same name.
+func mergeFirst(c SortConfig, st *State, n int) error {
+	ins := slices.Clone(st.Runs[:n])
 	name := fmt.Sprintf("run-%06d.zst", st.Next)
-	if err := mergeRuns(filepath.Join(c.Dir, name), Paths(c.Dir, ins), c.Threads); err != nil {
+	if err := mergeRuns(filepath.Join(c.Dir, name), Paths(c.Dir, ins), c.Guard.Active(c.Threads), c.Guard); err != nil {
 		return err
 	}
-	st.Runs = append(slices.Clone(st.Runs[mergeFanIn:]), name)
+	st.Runs = append(slices.Clone(st.Runs[n:]), name)
 	st.Next++
 	if err := saveState(c.Dir, *st); err != nil {
 		return err

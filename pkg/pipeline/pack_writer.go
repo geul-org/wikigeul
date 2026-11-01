@@ -8,6 +8,8 @@ import (
 	"time"
 
 	"github.com/geul-org/gogeul/pkg/pack"
+
+	"github.com/geul-org/wikigeul/pkg/memguard"
 )
 
 // packWriter puts results in job order (take) into the stream s, appends
@@ -17,7 +19,9 @@ import (
 // first result with anomalies (halt), writing them to anomaly with the run
 // line run and the anomalies allowed by -allow. skipped and raw sum the
 // reasons of the documents put since the process started (from docs0 at
-// start), printed with each checkpoint (logProgress).
+// start), printed with each checkpoint (logProgress). guard is the memory
+// watch: the writer checkpoints when it enters caution (cautions counts how
+// many entries it has answered) and stops when it says so (memStop).
 type packWriter struct {
 	s       *pack.Stream
 	rep     *os.File
@@ -36,4 +40,7 @@ type packWriter struct {
 	raw     map[string]int
 	start   time.Time
 	docs0   int64
+	guard   *memguard.Guard
+
+	cautions int64
 }

@@ -1,5 +1,5 @@
 //ff:func feature=pipeline type=command control=sequence
-//ff:what packWriter.finish — flush the report and close the stream (manifest, latest.txt), printing what was written
+//ff:what packWriter.finish — checkpoint that every entity is in, close the stream (manifest, latest.txt), printing what was written
 package pipeline
 
 import (
@@ -7,10 +7,14 @@ import (
 	"time"
 )
 
-// finish flushes the report and closes the stream, then prints the
-// generation, documents, records and bytes.
+// finish checkpoints the report and the progress, marked Drained, and closes
+// the stream, then prints the generation, documents, records and bytes. Close
+// keeps its own progress but not the caller's, and the guard can stop it: the
+// checkpoint gives a resumed run the report, the counts and the knowledge that
+// no entity is left. Checkpoints do not change the bytes written.
 func (w *packWriter) finish(start time.Time) error {
-	if err := w.w.Flush(); err != nil {
+	w.prog.Drained = true
+	if err := w.checkpoint(); err != nil {
 		return err
 	}
 	res, err := w.s.Close()

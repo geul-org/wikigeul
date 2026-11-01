@@ -4,6 +4,7 @@ required:
     port: "위키데이터 개체 → GEUL 레코드·문서 조립 — HEAD 출처 기록, LABEL·ALIAS·STATEMENT, 값 변환"
     pipeline: "변환 실행 공유부(DB·덤프 공통) — 플래그, 언어 레지스트리, pack 스트림·작성자·체크포인트, 엄격 모드, 보고서"
     dumpfile: "위키데이터 JSON 덤프 파일 직접 읽기 — 압축 해제, 개체 줄, 문서 키 순 정렬 런·합치기, 체크포인트"
+    memguard: "실행 중 메모리 감시 — 표본(meminfo·RSS·cgroup), 주의·위험 상태 기계, Go 힙 상한, 작업자 관문, 안전 지점 멈춤"
     cli: "wikigeul 명령 실행 — 덤프 플래그, 출처 기록, 정렬, 작업 생성"
   type:
     model: "data type definition"

@@ -14,7 +14,11 @@ import (
 // them (convertJobs) and the writer puts the results in document key order
 // (packWriter.take), each document as version 1 with its version list, served
 // under h/ by content hash without a copy. The report is opened fresh or cut
-// back to the checkpoint (newPackWriter).
+// back to the checkpoint (newPackWriter). A run resumed after every entity was
+// in (PackProgress.Drained: it stopped while the stream closed) lists nothing
+// again and goes straight to Close. c.Guard gates the workers, which climb
+// from one as memory answers (Guard.Ramp), and can stop the writer at a
+// checkpoint (packWriter.drain).
 func WritePack(s *pack.Stream, c Config, p PackProgress, prov port.Provenance, loaders []Loader, produce func(chan<- PackJob, *error)) error {
 	c.RecordedAt = p.RecordedAt
 	w, err := newPackWriter(s, c, p)
@@ -22,8 +26,14 @@ func WritePack(s *pack.Stream, c Config, p PackProgress, prov port.Provenance, l
 		return err
 	}
 	defer w.rep.Close()
+	c.Guard.SetPhase("convert")
 	jobs := make(chan PackJob, 4*c.Workers)
 	var perr error
-	go produce(jobs, &perr)
+	if p.Drained {
+		close(jobs)
+	} else {
+		c.Guard.Ramp()
+		go produce(jobs, &perr)
+	}
 	return w.drain(convertJobs(loaders, c, prov, s, jobs), &perr)
 }

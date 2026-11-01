@@ -9,11 +9,12 @@ import (
 )
 
 // scanDump reads the dump of c line by line from st.Offset (openInput),
-// taking each line (sorter.line, lines of any length whole). When c.Mem
-// bytes of entity JSON are held, or checkpointBytes of text were read, it
-// writes a run and checkpoints (sorter.spill); at the end it writes the last
-// run and checks the file's SHA-256 (sorter.finish).
+// taking each line (sorter.line, lines of any length whole). When a run is
+// due (sorter.due) it writes it and checkpoints (sorter.spill), and a run the
+// guard stopped ends there; at the end it writes the last run and checks the
+// file's SHA-256 (sorter.finish).
 func scanDump(c SortConfig, st *State) error {
+	c.Guard.SetPhase("sort:scan")
 	in, err := openInput(c, *st)
 	if err != nil {
 		return err
@@ -26,8 +27,11 @@ func scanDump(c SortConfig, st *State) error {
 		if len(raw) > 0 {
 			s.line(raw)
 		}
-		if err == nil && (s.held >= c.Mem || s.since >= checkpointBytes) {
+		if err == nil && s.due() {
 			err = s.spill()
+		}
+		if err == nil {
+			err = c.Guard.Err()
 		}
 		if errors.Is(err, io.EOF) {
 			return s.finish()
