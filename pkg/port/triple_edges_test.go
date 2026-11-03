@@ -25,7 +25,7 @@ func TestTripleEdges(t *testing.T) {
 	if rep.Raw["time: JSON 아님"] != 1 || rep.Raw["qualifier time: JSON 아님"] != 1 || rep.Triples != 4 || rep.Qualifiers != 2 || rep.Markers["NO-VALUE"] != 1 || rep.Markers["qualifier UNKNOWN-VALUE"] != 1 {
 		t.Fatalf("raw %v", rep.Raw)
 	}
-	if len(rs) != 6 || ids.Next() != 7 || rs[4].Payload[len(rs[4].Payload)-2] != 0x0002 || rs[5].Payload[len(rs[5].Payload)-1] != 0x0001 || rs[0].Codec != edgeTriple || rs[1].Codec != edgeQualifier || rs[1].Payload[5] != 1 || rs[2].Payload[len(rs[2].Payload)-1] != 1 {
+	if len(rs) != 6 || ids.Next() != 7 || rs[4].Payload[len(rs[4].Payload)-2] != 0x0020 || rs[5].Payload[len(rs[5].Payload)-1] != 0x0010 || rs[0].Codec != edgeTriple || rs[1].Codec != edgeQualifier || rs[1].Payload[5] != 1 || rs[2].Payload[len(rs[2].Payload)-1] != 1 {
 		t.Fatalf("got %d next %d", len(rs), ids.Next())
 	}
 	if rep.Skipped["속성 ID: X1"] != 1 || rep.Skipped["형식 미지원: unknown"] != 1 || rep.Skipped["rank: odd"] != 1 {

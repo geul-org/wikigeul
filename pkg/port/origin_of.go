@@ -21,7 +21,7 @@ func originOf(a IDs, describe []refSnak, st *sourcing, rep *Report) (core.Record
 	case len(describe) == 0:
 		rep.OriginNone++
 		return core.Record{Kind: core.KindReference, Codec: 0}, nil
-	case len(describe) == 1 && describe[0].Property == "P248" && describe[0].Value.Kind == core.KindReference && describe[0].Value.Codec>>3 == core.RefWikidataQID:
+	case len(describe) == 1 && describe[0].Property == "P248" && isQID(describe[0].Value):
 		rep.OriginQIDs++
 		return describe[0].Value, nil
 	default:

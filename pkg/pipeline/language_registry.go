@@ -13,27 +13,29 @@ import (
 	"github.com/geul-org/wikigeul/pkg/port"
 )
 
-// registryDoc is the LANGUAGE-SHORT-CODE codec spec document (GEUL Issuer
-// 0x0000, document ID = its TAG WORD 0x0848; codec-spec 규격 문서의 위치).
-var registryDoc = []core.Word{0, 0, 0, 0x0848}
+// registryDoc is the codec ID of the LANGUAGE-SHORT-CODE codec document of the
+// GEUL Issuer 0x00000000: its TAG with L=0 as 2 words, 0x000005a0
+// (§3.13 `0x00000000/codecs/<코덱 ID>/`).
+var registryDoc = []core.Word{0, core.TargetWord(core.KindValue, core.CodecLanguageShortCode)}
 
-// languageRegistry reads version v of the LANGUAGE-SHORT-CODE codec spec
-// document from dir (v 0: the newest neither deprecated nor deleted, fixed
-// once here for the whole run) through the GEUL library's resolve path, and
-// returns the registry its ENUMs and BINDs declare
-// (codecspec.Spec.Languages, registryOf) and the version it read as
-// `0x0000/0x0000000000000848@n 0x<content hash>`, which the run prints and
-// the report records. A document without registry is an error.
+// languageRegistry reads version v of the LANGUAGE-SHORT-CODE codec document
+// from dir (v 0: the newest neither deprecated nor deleted, fixed once here
+// for the whole run) through the GEUL library's resolve path, and returns the
+// registry its ENUMs and BINDs declare (codecspec.Spec.Languages, registryOf)
+// and the version it read as `0x00000000/codecs/0x000005a0@n 0x<content
+// hash>`, which the run prints and the report records. A document without
+// registry is an error.
 func languageRegistry(dir resolve.Dir, v uint32) (port.Languages, string, error) {
-	h, err := dir.Log([]core.Word{0}, registryDoc)
+	where := core.FormatID(geulIssuerWords()) + "/codecs/" + core.FormatID(registryDoc)
+	h, err := dir.Log(geulIssuerWords(), registryDoc)
 	if err != nil {
 		return nil, "", fmt.Errorf("language registry: %w", err)
 	}
 	e, ok := registryVersion(h, v)
 	if !ok {
-		return nil, "", fmt.Errorf("language registry: no version %d of 0x0000/%s", v, core.FormatID(registryDoc))
+		return nil, "", fmt.Errorf("language registry: no version %d of %s", v, where)
 	}
-	b, err := dir.At([]core.Word{0}, registryDoc, e.Version)
+	b, err := dir.At(geulIssuerWords(), registryDoc, e.Version)
 	if err != nil {
 		return nil, "", fmt.Errorf("language registry: %w", err)
 	}
@@ -42,5 +44,5 @@ func languageRegistry(dir resolve.Dir, v uint32) (port.Languages, string, error)
 	if err != nil {
 		return nil, "", err
 	}
-	return langs, fmt.Sprintf("0x0000/%s@%d 0x%x", core.FormatID(registryDoc), e.Version, e.Hash), nil
+	return langs, fmt.Sprintf("%s@%d 0x%x", where, e.Version, e.Hash), nil
 }

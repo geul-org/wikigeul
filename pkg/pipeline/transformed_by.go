@@ -6,7 +6,7 @@ import (
 	"github.com/geul-org/gogeul/pkg/core"
 )
 
-// transformedBy encodes the HEAD Meta TRANSFORMED-BY (0x33) records of b in
+// transformedBy encodes the HEAD Meta TRANSFORMED-BY (0x1D4L) records of b in
 // order, so documents of one run can be compared: they must name the same
 // porter and library commits.
 func transformedBy(b []byte) string {
@@ -17,7 +17,7 @@ func transformedBy(b []byte) string {
 	}
 	var out []core.Word
 	for _, r := range parts.Head {
-		if r.Kind == core.KindMeta && r.Codec == 0x33 {
+		if r.Kind == core.KindMeta && r.Codec == core.MetaTransformedBy {
 			w, _ := core.EncodeRecord(r)
 			out = append(out, w...)
 		}

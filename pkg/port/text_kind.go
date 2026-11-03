@@ -4,7 +4,7 @@ package port
 
 // textKind names the text Edge codec for a Note's property: LABEL,
 // DESCRIPTION or ALIAS, and "text" for any other codec.
-func textKind(codec uint8) string {
+func textKind(codec uint16) string {
 	switch codec {
 	case edgeLabel:
 		return "LABEL"

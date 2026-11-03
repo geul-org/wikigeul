@@ -3,6 +3,7 @@
 package port
 
 import (
+	"slices"
 	"testing"
 
 	"github.com/geul-org/gogeul/pkg/core"
@@ -14,15 +15,15 @@ func TestSourceEdges(t *testing.T) {
 	st := newSourcing()
 	refs := q42Refs()
 	rs := sourceEdges(freshIDs(10), 2, []source.Reference{refs[3], refs[0]}, st, nil, &rep)
-	codecs := []uint8{}
+	codecs := []uint16{}
 	for _, r := range rs {
 		codecs = append(codecs, r.Codec)
 	}
-	want := []uint8{edgeTriple, edgeTriple, edgeSource, edgeQualifier, edgeQualifier, edgeSource, edgeQualifier}
-	if string(codecs) != string(want) || rs[0].Payload[3] != 248 || rs[1].Payload[3] != 407 || len(st.expect[2]) != 2 || rep.Sources != 2 || rep.SourceQuals != 3 {
+	want := []uint16{edgeTriple, edgeTriple, edgeSource, edgeQualifier, edgeQualifier, edgeSource, edgeQualifier}
+	if !slices.Equal(codecs, want) || rs[0].Payload[3] != 248 || rs[1].Payload[3] != 407 || len(st.expect[2]) != 2 || rep.Sources != 2 || rep.SourceQuals != 3 {
 		t.Fatalf("%v %+v", codecs, rep)
 	}
-	if o := rs[5].Payload[4:]; o[0] != 0x0120 || o[1] != core.Word(5375741>>16) || o[2] != core.Word(5375741&0xFFFF) {
+	if o := rs[5].Payload[4:]; o[0] != 0x0142 || o[1] != core.Word(5375741>>16) || o[2] != core.Word(5375741&0xFFFF) {
 		t.Fatalf("Britannica origin %04x", o)
 	}
 }

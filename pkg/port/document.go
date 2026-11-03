@@ -12,10 +12,10 @@ func document(head, body []core.Record) []byte {
 		ws, _ := core.EncodeRecord(r)
 		in = append(in, ws...)
 	}
-	in = append(in, core.Word(0x180E))
+	in = append(in, core.TargetWord(core.KindMeta, core.MetaBody))
 	for _, r := range body {
 		ws, _ := core.EncodeRecord(r)
 		in = append(in, ws...)
 	}
-	return core.PutWords(core.WrapDocument(append(in, core.Word(0x180F))))
+	return core.PutWords(core.WrapDocument(append(in, core.TargetWord(core.KindMeta, core.MetaEnd))))
 }

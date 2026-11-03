@@ -15,6 +15,6 @@ const minMergeRuns = 8
 func streamOptions(c Config) pack.StreamOptions {
 	z := &pack.Zstd{Workers: c.Workers}
 	c.Guard.OnActive(z.SetWorkers)
-	return pack.StreamOptions{Build: pack.BuildOptions{Codec: z}, Issuers: []string{"0x00010000"}, Created: c.RecordedAt, Pace: c.Guard.Pace,
+	return pack.StreamOptions{Build: pack.BuildOptions{Codec: z}, Issuers: []string{WikidataIssuer}, Created: c.RecordedAt, Pace: c.Guard.Pace,
 		MergeWidth: func() int { return c.Guard.Fit(pack.MergeRunMemory, minMergeRuns, pack.DefaultMergeRuns) }}
 }

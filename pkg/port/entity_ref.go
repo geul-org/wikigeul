@@ -16,9 +16,9 @@ func entityRef(id string) (core.Record, bool) {
 	words := core.EncodeUintValue(n).Payload
 	switch prefix {
 	case 'Q':
-		return core.Record{Kind: core.KindReference, Codec: core.RefWikidataQID << 3, Payload: words}, true
+		return core.Record{Kind: core.KindReference, Codec: core.CodecWikidataQID, Payload: words}, true
 	case 'P':
-		return core.Record{Kind: core.KindReference, Codec: core.RefWikidataPID << 3, Payload: words}, true
+		return core.Record{Kind: core.KindReference, Codec: core.CodecWikidataPID, Payload: words}, true
 	default:
 		return core.Record{}, false
 	}

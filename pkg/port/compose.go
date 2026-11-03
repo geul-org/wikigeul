@@ -6,7 +6,7 @@ import "github.com/geul-org/gogeul/pkg/core"
 
 // compose builds a record of kind k and codec whose payload is parts, each
 // encoded whole (TAG and Length included), in order.
-func compose(k core.Kind, codec uint8, parts ...core.Record) core.Record {
+func compose(k core.Kind, codec uint16, parts ...core.Record) core.Record {
 	var payload []core.Word
 	for _, p := range parts {
 		ws, _ := core.EncodeRecord(p)

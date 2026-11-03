@@ -24,7 +24,7 @@ func TestRunDumpPack(t *testing.T) {
 	if err := runDumpPack(c, prov, st, nil, ""); err != nil {
 		t.Fatalf("resume with no stream: %v", err)
 	}
-	if _, err := os.Stat(filepath.Join(c.Root, ".well-known", "geul", "0x00010000", "latest.txt")); err != nil {
+	if _, err := os.Stat(filepath.Join(c.Root, ".well-known", "geul", "0x00000001", "latest.txt")); err != nil {
 		t.Fatal("no set written")
 	}
 	c.Resume = false

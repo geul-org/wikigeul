@@ -5,7 +5,7 @@ package port
 import "github.com/geul-org/gogeul/pkg/core"
 
 // localOf decodes ws as one record and returns its LOCAL ID when it is a
-// LOCAL Reference (Quantifier 000).
+// LOCAL Reference (LOCAL × Identified, 0x005L).
 func localOf(ws []core.Word) (uint64, bool) {
 	r, _, err := core.DecodeRecord(ws)
 	if err != nil {

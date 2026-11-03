@@ -13,7 +13,7 @@ import (
 // for t on subject: the Object is t as UTF8-LANGUAGE-TEXT (languageText, its
 // language a LANGUAGE-SHORT-CODE when langs numbers the tag). It
 // is false when t's language code is not a BCP 47 tag in form.
-func textEdge(codec uint8, a IDs, subject core.Record, t source.Text, langs Languages) (core.Record, bool) {
+func textEdge(codec uint16, a IDs, subject core.Record, t source.Text, langs Languages) (core.Record, bool) {
 	text, ok := languageText(langs, t.Lang, t.Value)
 	if !ok {
 		return core.Record{}, false

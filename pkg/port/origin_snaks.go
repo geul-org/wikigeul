@@ -11,7 +11,7 @@ func originSnaks(o []core.Word, desc map[uint64][]string) []string {
 	r, _, _ := core.DecodeRecord(o)
 	local, isLocal := localOf(o)
 	switch {
-	case r.Kind == core.KindReference && r.Codec>>3 == core.RefWikidataQID:
+	case isQID(r):
 		p248, _ := entityRef("P248")
 		return []string{snakText(wordsOf(p248), o)}
 	case isLocal:

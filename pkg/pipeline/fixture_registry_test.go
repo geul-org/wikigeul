@@ -10,8 +10,9 @@ import (
 	"github.com/geul-org/gogeul/pkg/resolve"
 )
 
-// fixtureRegistry publishes, as version 1 of 0x0000/0x0000000000000848, a
-// spec document like the real one: DECLARE 0x0848, the 1-WORD FIELD code and
+// fixtureRegistry publishes, as version 1 of the codec 0x00000000/codecs/0x000005a0, a
+// codec document like the real one: DOC-ID CODEC-POINTER(0x00000000,
+// 0x000005a0, 0), DECLARE 0x05A0 (LANGUAGE-SHORT-CODE), the 1-WORD FIELD code and
 // one ENUM with its BIND per tag, here en 0x0784, pt-BR 0x4130, zh-Hans 0x404c
 // (only those in tags when any are given; tags naming none gives a spec
 // without codes).
@@ -21,9 +22,10 @@ func fixtureRegistry(t *testing.T, root string, tags ...string) {
 		r, _ := core.EncodeBind(core.Bind{EdgeID: id, Subject: core.EncodeLocalRef(subj), Name: []byte(name)})
 		return enc(r)
 	}
-	docID, _ := core.EncodeDocID([]core.Word{0}, registryDoc)
-	in := slices.Concat(enc(core.EncodeSpecVersion(1)), enc(docID), []core.Word{0x180E},
-		enc(core.EncodeDeclare(core.Declare{EdgeID: 1, Target: 0x0848})),
+	target := core.TargetWord(core.KindValue, core.CodecLanguageShortCode)
+	docID, _ := core.EncodeDocIDCodec([]core.Word{0, 0}, uint32(target))
+	in := slices.Concat(enc(core.EncodeSpecVersion(1)), enc(docID), []core.Word{core.TargetWord(core.KindMeta, core.MetaBody)},
+		enc(core.EncodeDeclare(core.Declare{EdgeID: 1, Target: target})),
 		enc(core.EncodeFieldDecl(core.FieldDecl{EdgeID: 2, Declare: 1, Width: 1})),
 		bind(3, 1, "LANGUAGE-SHORT-CODE"), bind(4, 2, "code"))
 	id := uint64(5)
@@ -38,7 +40,7 @@ func fixtureRegistry(t *testing.T, root string, tags ...string) {
 		in = append(in, bind(id+1, id, e.tag)...)
 		id += 2
 	}
-	b := core.PutWords(core.WrapDocument(append(in, 0x180F)))
+	b := core.PutWords(core.WrapDocument(append(in, core.TargetWord(core.KindMeta, core.MetaEnd))))
 	if _, err := (resolve.Dir{Root: root}).PublishCodec(b); err != nil {
 		t.Fatal(err)
 	}

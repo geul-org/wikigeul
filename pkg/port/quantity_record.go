@@ -40,7 +40,7 @@ func quantityRecord(value string) (core.Record, string) {
 	switch {
 	case !okAmount:
 		return core.Record{}, "quantity: 수"
-	case v.Unit != "1" && (!okUnit || unit.Codec != core.RefWikidataQID<<3):
+	case v.Unit != "1" && (!okUnit || unit.Codec != core.CodecWikidataQID):
 		return core.Record{}, "quantity: 단위"
 	case !bound(v.Lower, &q.Lower) || !bound(v.Upper, &q.Upper):
 		return core.Record{}, "quantity: 경계"

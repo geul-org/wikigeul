@@ -15,7 +15,7 @@ func TestLocalDefinition(t *testing.T) {
 	ids := freshIDs(3)
 	r, local := localDefinition(ids, obj)
 	objWords, _ := core.EncodeRecord(obj)
-	if r.Kind != core.KindEdge || r.Codec != edgeReferenceNode || local != 4 || !slices.Equal(r.Payload, append([]core.Word{0x0088, 3, 0x0088, 4}, objWords...)) {
+	if r.Kind != core.KindEdge || r.Codec != edgeReferenceNode || local != 4 || !slices.Equal(r.Payload, append([]core.Word{0x0051, 3, 0x0051, 4}, objWords...)) {
 		t.Fatalf("got %+v local %d", r, local)
 	}
 	prev := document(nil, []core.Record{r})

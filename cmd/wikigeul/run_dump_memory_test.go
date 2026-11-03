@@ -23,7 +23,7 @@ func TestRunDumpMemory(t *testing.T) {
 	full := func(c config) (string, config) {
 		c.Root = t.TempDir()
 		c.SortDir, c.Report = filepath.Join(c.Root, "sort"), filepath.Join(c.Root, "r.tsv")
-		return filepath.Join(c.Root, ".well-known/geul/0x00010000"), c
+		return filepath.Join(c.Root, ".well-known/geul/0x00000001"), c
 	}
 	set, ref := full(base)
 	ref.Mem.Off = true

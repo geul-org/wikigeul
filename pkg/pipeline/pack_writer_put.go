@@ -7,7 +7,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/geul-org/gogeul/pkg/core"
 	"github.com/geul-org/gogeul/pkg/pack"
 )
 
@@ -50,7 +49,7 @@ func (w *packWriter) put(r packResult) error {
 		return fmt.Errorf("%c%d: TRANSFORMED-BY differs from the run's first document", r.Job.Kind, r.Job.Num)
 	}
 	for slot, rec := range []pack.StreamRecord{r.List, r.Version} {
-		if err := w.s.Put([]core.Word{1, 0}, r.Doc, uint32(slot), rec); err != nil {
+		if err := w.s.Put(wikidataIssuerWords(), r.Doc, uint32(slot), rec); err != nil {
 			return err
 		}
 	}

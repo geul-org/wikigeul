@@ -15,7 +15,7 @@ func TestReferenceSnaks(t *testing.T) {
 	p227, _ := entityRef("P227")
 	v := core.EncodeBytesValue(core.CodecUTF8TextEven, []byte("119033364"))
 	src, id := sourceEdge(a, 2, q)
-	broken := core.Record{Kind: core.KindEdge, Codec: edgeSource, Payload: []core.Word{0x0088, 30, 0x00A0}}
+	broken := core.Record{Kind: core.KindEdge, Codec: edgeSource, Payload: []core.Word{0x0051, 30, 0x0141}}
 	got := referenceSnaks([]core.Record{src, qualifierEdge(a, p227, id, v), broken})
 	want := snakSet([]string{snakText(wordsOf(p248), wordsOf(q)), snakText(wordsOf(p227), wordsOf(v))})
 	if len(got) != 1 || len(got[2]) != 1 || got[2][0] != want {

@@ -1,5 +1,5 @@
 //ff:func feature=port type=encoder control=selection
-//ff:what snakMarker — the slot marker of a special snak: somevalue → UNKNOWN-VALUE (0x0001), novalue → NO-VALUE (0x0002); false for a value snak
+//ff:what snakMarker — the slot marker of a special snak: somevalue → UNKNOWN-VALUE (0x0010), novalue → NO-VALUE (0x0020); false for a value snak
 package port
 
 import "github.com/geul-org/gogeul/pkg/core"

@@ -9,7 +9,7 @@ import (
 )
 
 func TestSnakText(t *testing.T) {
-	if got := snakText([]core.Word{0x00A8, 248}, []core.Word{0x00A0, 5}); got != "[00a8 00f8]=[00a0 0005]" {
+	if got := snakText([]core.Word{0x0191, 248}, []core.Word{0x0141, 5}); got != "[0191 00f8]=[0141 0005]" {
 		t.Fatalf("%q", got)
 	}
 	if snakText([]core.Word{1}, []core.Word{2}) == snakText([]core.Word{1}, []core.Word{3}) {

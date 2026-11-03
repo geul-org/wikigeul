@@ -20,25 +20,25 @@ func TestObjectRecord(t *testing.T) {
 		ws, _ := core.EncodeRecord(r)
 		return ws
 	}
-	if ws := enc(source.Claim{Type: "wikibase-entityid", Value: "Q5"}); !slices.Equal(ws, []core.Word{0x00A0, 5}) {
+	if ws := enc(source.Claim{Type: "wikibase-entityid", Value: "Q5"}); !slices.Equal(ws, []core.Word{0x0141, 5}) {
 		t.Fatalf("item: %04X", ws)
 	}
-	if ws := enc(source.Claim{Type: "quantity", Value: `{"amount":"+1.20","unit":"1"}`}); !slices.Equal(ws, []core.Word{0x0B86, 0x0990, 0xFFFF, 0xFFFE, 0x0078, 0, 0, 0}) {
+	if ws := enc(source.Claim{Type: "quantity", Value: `{"amount":"+1.20","unit":"1"}`}); !slices.Equal(ws, []core.Word{0x0467, 0x0483, 0xFFFF, 0xFFFE, 0x0078, 0, 0, 0}) {
 		t.Fatalf("quantity: %04X", ws)
 	}
-	if ws := enc(source.Claim{Type: "string", Datatype: "url", Value: "a:b"}); !slices.Equal(ws, []core.Word{0x0945, 0x613A, 0x6200}) {
+	if ws := enc(source.Claim{Type: "string", Datatype: "url", Value: "a:b"}); !slices.Equal(ws, []core.Word{0x0552, 0x613A, 0x6200}) {
 		t.Fatalf("url: %04X", ws)
 	}
-	if ws := enc(source.Claim{Type: "string", Value: "ab"}); !slices.Equal(ws, []core.Word{0x08C0, 0x6162}) {
+	if ws := enc(source.Claim{Type: "string", Value: "ab"}); !slices.Equal(ws, []core.Word{0x0521, 0x6162}) {
 		t.Fatalf("string: %04X", ws)
 	}
-	if ws := enc(source.Claim{Type: "time", Value: `{"time":"+1970-01-01T00:00:00Z","precision":11,"calendarmodel":"` + gregorian + `"}`}); !slices.Equal(ws, []core.Word{0x0920, 0, 0}) {
+	if ws := enc(source.Claim{Type: "time", Value: `{"time":"+1970-01-01T00:00:00Z","precision":11,"calendarmodel":"` + gregorian + `"}`}); !slices.Equal(ws, []core.Word{0x04A2, 0, 0}) {
 		t.Fatalf("time: %04X", ws)
 	}
-	if ws := enc(source.Claim{Type: "monolingualtext", Value: `{"text":"Paris","language":"fr"}`}); !slices.Equal(ws, []core.Word{0x0ACB, 0x08C6, 0x6672, 0x5061, 0x7269, 0x7300}) {
+	if ws := enc(source.Claim{Type: "monolingualtext", Value: `{"text":"Paris","language":"fr"}`}); !slices.Equal(ws, []core.Word{0x0595, 0x0561, 0x6672, 0x5061, 0x7269, 0x7300}) {
 		t.Fatalf("monolingual: %04X", ws)
 	}
-	if ws := enc(source.Claim{Type: "globecoordinate", Value: `{"latitude":1,"longitude":2,"precision":null,"globe":"http://www.wikidata.org/entity/Q2"}`}); ws[0] != 0x0D84 {
+	if ws := enc(source.Claim{Type: "globecoordinate", Value: `{"latitude":1,"longitude":2,"precision":null,"globe":"http://www.wikidata.org/entity/Q2"}`}); ws[0] != 0x044B {
 		t.Fatalf("coordinate: %04X", ws)
 	}
 	if ws := enc(source.Claim{SnakType: "somevalue"}); !slices.Equal(ws, []core.Word{core.UnknownValue}) {

@@ -50,7 +50,7 @@ func coordinateRecord(value string) (core.Record, string) {
 		c.Unit = &unit
 	}
 	switch {
-	case !okGlobe || globe.Codec != core.RefWikidataQID<<3:
+	case !okGlobe || globe.Codec != core.CodecWikidataQID:
 		return core.Record{}, "globecoordinate: 천체 없음"
 	case v.Altitude != nil:
 		return core.Record{}, "globecoordinate: 고도"

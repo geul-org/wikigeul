@@ -10,7 +10,7 @@ import (
 )
 
 func TestWordsOf(t *testing.T) {
-	if got := wordsOf(core.EncodeLocalRef(5)); !slices.Equal(got, []core.Word{0x0088, 5}) {
+	if got := wordsOf(core.EncodeLocalRef(5)); !slices.Equal(got, []core.Word{0x0051, 5}) {
 		t.Fatalf("%04x", got)
 	}
 	if got := wordsOf(core.Record{Kind: core.KindValue, Codec: 0x80}); len(got) != 0 {

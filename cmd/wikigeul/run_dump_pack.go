@@ -16,17 +16,17 @@ import (
 )
 
 // runDumpPack writes the dump sorted into st as the pack set of
-// wikidata.geul.org under <root>/.well-known/geul/0x00010000: the Issuer's
+// wikidata.geul.org under <root>/.well-known/geul/0x00000001: the Issuer's
 // pack set is opened (pipeline.OpenPackStream: resumed, or new with the
 // dictionary trained on dumpSampleJobs), the jobs come from the merged runs
 // (produceDumpJobs) and c.Workers goroutines convert them with no database
 // (loadJob decodes each line) into the same writer as the loaded database's
-// (pipeline.WritePack). No documents.geul is written: at Wikidata's size the
-// name index would be one 4 GB document, and a document's name follows from
-// its ID (port.DocNumber). -resume when the earlier run stopped while
+// (pipeline.WritePack). No document list (`<Issuer>/docs/`, the name index)
+// is written: at Wikidata's size it would be one 4 GB document, and a
+// document's name follows from its ID (port.DocNumber). -resume when the earlier run stopped while
 // sorting, before the stream began, starts the stream.
 func runDumpPack(c config, prov port.Provenance, st dumpfile.State, ids []pipeline.PackJob, idsHash string) error {
-	set := filepath.Join(c.Root, ".well-known", "geul", "0x00010000")
+	set := filepath.Join(c.Root, ".well-known", "geul", pipeline.WikidataIssuer)
 	jobs, err := dumpSampleJobs(c, st, ids)
 	if err != nil {
 		return fmt.Errorf("dictionary samples: %w", err)

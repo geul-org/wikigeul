@@ -13,7 +13,7 @@ import (
 
 func TestStreamOptions(t *testing.T) {
 	o := streamOptions(Config{Workers: 4, RecordedAt: 7})
-	if o.MergeWidth() != pack.DefaultMergeRuns || o.Pace("close:h") != nil || o.Created != 7 || o.Issuers[0] != "0x00010000" {
+	if o.MergeWidth() != pack.DefaultMergeRuns || o.Pace("close:h") != nil || o.Created != 7 || o.Issuers[0] != "0x00000001" {
 		t.Fatalf("%+v", o)
 	}
 	if z, ok := o.Build.Codec.(*pack.Zstd); !ok || z.Workers != 4 {

@@ -11,7 +11,7 @@ import (
 )
 
 func TestStringRecord(t *testing.T) {
-	for dt, codec := range map[string]uint8{"url": codecURIEven, "commonsMedia": codecURIEven, "geo-shape": codecURIEven, "tabular-data": codecURIEven, "external-id": core.CodecUTF8TextEven, "string": core.CodecUTF8TextEven, "math": core.CodecUTF8TextEven} {
+	for dt, codec := range map[string]uint16{"url": codecURIEven, "commonsMedia": codecURIEven, "geo-shape": codecURIEven, "tabular-data": codecURIEven, "external-id": core.CodecUTF8TextEven, "string": core.CodecUTF8TextEven, "math": core.CodecUTF8TextEven} {
 		r, reason := stringRecord(source.Claim{Type: "string", Datatype: dt, Value: "http://x.org/a"})
 		if reason != "" || r.Codec&^1 != codec {
 			t.Fatalf("%s: codec 0x%02X %q", dt, r.Codec, reason)

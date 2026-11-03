@@ -29,11 +29,11 @@ func TestRunDump(t *testing.T) {
 	if err := run(args(root, "-report", rep)); err != nil {
 		t.Fatal(err)
 	}
-	r, err := pack.Open(context.Background(), pack.FileStore{Root: filepath.Join(root, ".well-known/geul/0x00010000")}, pack.Options{})
+	r, err := pack.Open(context.Background(), pack.FileStore{Root: filepath.Join(root, ".well-known/geul/0x00000001")}, pack.Options{})
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err := r.Fetch(context.Background(), "0x00010000/0x510000000000002a/0x00000001.geul"); err != nil {
+	if _, err := r.Fetch(context.Background(), "0x00000001/docs/0x510000000000002a/0x00000001.geul"); err != nil {
 		t.Fatal(err)
 	}
 	b, _ := os.ReadFile(rep)

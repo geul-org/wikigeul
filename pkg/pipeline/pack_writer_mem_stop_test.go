@@ -17,7 +17,7 @@ func TestPackWriterMemStop(t *testing.T) {
 	c := packTestConfig(t)
 	c.Report, c.Guard = filepath.Join(t.TempDir(), "r.tsv"), fixtureGuard(t, 10)
 	set := filepath.Join(t.TempDir(), "set")
-	o := pack.StreamOptions{Build: pack.BuildOptions{Codec: pack.Stored{}}, Issuers: []string{"0x00010000"}, Created: 1}
+	o := pack.StreamOptions{Build: pack.BuildOptions{Codec: pack.Stored{}}, Issuers: []string{WikidataIssuer}, Created: 1}
 	s, err := pack.NewStream(set, o)
 	if err != nil {
 		t.Fatal(err)

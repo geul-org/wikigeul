@@ -9,7 +9,7 @@ import (
 )
 
 func TestLocalOfParts(t *testing.T) {
-	ps := [][]core.Word{{0x0088, 7}}
+	ps := [][]core.Word{{0x0051, 7}}
 	if id, ok := localOfParts(ps, 0); !ok || id != 7 {
 		t.Fatalf("%d %v", id, ok)
 	}

@@ -23,7 +23,7 @@ func TestBuildDocBOM(t *testing.T) {
 			{Property: "P2093", Type: "string", Datatype: "string", Value: "\ufeffAuthor", Rank: "normal"},
 		},
 	}
-	b, rep, err := BuildDoc(e, []core.Word{1, 0}, prov(), freshIDs(1), nil)
+	b, rep, err := BuildDoc(e, []core.Word{0, 1}, prov(), freshIDs(1), nil)
 	if err != nil || rep.Labels != 1 || rep.Triples != 2 || rep.Qualifiers != 1 || rep.RefMismatch != 0 || len(rep.Skipped) != 0 || len(rep.Raw) != 0 {
 		t.Fatalf("report %+v %v", rep, err)
 	}

@@ -5,7 +5,6 @@ package pipeline
 import (
 	"strconv"
 
-	"github.com/geul-org/gogeul/pkg/core"
 	"github.com/geul-org/gogeul/pkg/delta"
 
 	"github.com/geul-org/wikigeul/pkg/port"
@@ -22,6 +21,6 @@ func buildOne(load Loader, c Config, prov port.Provenance, job PackJob) ([]byte,
 		return nil, port.Report{ID: id, Missing: err == nil}, false, err
 	}
 	ids, _ := delta.NewLocalIDs(nil, 0) // no previous version: never fails
-	b, rep, err := port.BuildDoc(e, []core.Word{1, 0}, prov, ids, c.Langs)
+	b, rep, err := port.BuildDoc(e, wikidataIssuerWords(), prov, ids, c.Langs)
 	return b, rep, err == nil, err
 }

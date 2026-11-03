@@ -15,7 +15,7 @@ func TestOriginSnaks(t *testing.T) {
 	if got := originSnaks(wordsOf(q), desc); len(got) != 1 || got[0] != snakText(wordsOf(p248), wordsOf(q)) {
 		t.Fatalf("item %v", got)
 	}
-	if got := originSnaks([]core.Word{0x0088, 20}, desc); len(got) != 2 {
+	if got := originSnaks([]core.Word{0x0051, 20}, desc); len(got) != 2 {
 		t.Fatalf("local %v", got)
 	}
 	if got := originSnaks([]core.Word{core.Absent}, desc); got != nil {

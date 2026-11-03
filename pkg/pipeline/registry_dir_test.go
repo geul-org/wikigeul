@@ -19,7 +19,7 @@ func TestRegistryDir(t *testing.T) {
 		t.Fatal("plain tree")
 	}
 	packed := t.TempDir()
-	if _, err := pack.Build(context.Background(), root, filepath.Join(packed, ".well-known/geul/0x0000"), pack.BuildOptions{}); err != nil {
+	if _, err := pack.Build(context.Background(), root, filepath.Join(packed, ".well-known/geul/0x00000000"), pack.BuildOptions{}); err != nil {
 		t.Fatal(err)
 	}
 	d, err = registryDir(packed)
@@ -29,7 +29,7 @@ func TestRegistryDir(t *testing.T) {
 	if _, doc, err := languageRegistry(d, 0); err != nil || doc == "" {
 		t.Fatalf("registry through the pack: %v", err)
 	}
-	os.WriteFile(filepath.Join(packed, ".well-known/geul/0x0000/latest.txt"), []byte("1 0000\n"), 0o644)
+	os.WriteFile(filepath.Join(packed, ".well-known/geul/0x00000000/latest.txt"), []byte("1 0000\n"), 0o644)
 	if _, err := registryDir(packed); err == nil {
 		t.Fatal("broken set: want error")
 	}

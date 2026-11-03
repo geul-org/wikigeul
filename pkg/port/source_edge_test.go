@@ -12,7 +12,7 @@ import (
 func TestSourceEdge(t *testing.T) {
 	q, _ := entityRef("Q36578")
 	r, id := sourceEdge(freshIDs(9), 2, q)
-	if id != 9 || r.Codec != edgeSource || !slices.Equal(r.Payload, []core.Word{0x0088, 9, 0x0088, 2, 0x00A0, 36578}) {
+	if id != 9 || r.Codec != edgeSource || !slices.Equal(r.Payload, []core.Word{0x0051, 9, 0x0051, 2, 0x0141, 36578}) {
 		t.Fatalf("%d %04x", id, r.Payload)
 	}
 }

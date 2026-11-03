@@ -12,7 +12,7 @@ import (
 var uriScheme = regexp.MustCompile(`^[A-Za-z][A-Za-z0-9+.-]*:`)
 
 // urlRecord converts a url value (an IRI as Wikidata stores it) to a URI
-// Value (0x44/0x45): every byte a URI cannot hold, including each UTF-8 byte
+// Value (0x054L/0x055L): every byte a URI cannot hold, including each UTF-8 byte
 // of a non-ASCII character, is percent-encoded (RFC 3987 3.1), which a
 // reader can undo. A value with no scheme is not a URI and gives its reason
 // (claimObject keeps it as original text).

@@ -14,21 +14,21 @@ import (
 
 func TestHeadRecords(t *testing.T) {
 	e := source.Entity{ID: "Q42", LastRevID: 7, Modified: 9}
-	head, decl, err := headRecords([]core.Word{1, 0}, 42, e, prov(), freshIDs(1))
+	head, decl, err := headRecords([]core.Word{0, 1}, 42, e, prov(), freshIDs(1))
 	if err != nil || len(head) != 8 || len(decl) != 3 {
 		t.Fatalf("got %d %d %v", len(head), len(decl), err)
 	}
-	var codecs []uint8
+	var codecs []uint16
 	for _, r := range head {
 		codecs = append(codecs, r.Codec)
 	}
-	if !slices.Equal(codecs, []uint8{core.MetaSpecVersion, core.MetaDocID, metaTransformedBy, metaTransformedBy, metaTransformedBy, edgeSource, edgeSource, edgeQualifier}) {
+	if !slices.Equal(codecs, []uint16{core.MetaSpecVersion, core.MetaDocID, metaTransformedBy, metaTransformedBy, metaTransformedBy, edgeSource, edgeSource, edgeQualifier}) {
 		t.Fatalf("codecs %02X", codecs)
 	}
-	if issuer, doc, err := core.DecodeDocID(head[1]); err != nil || !slices.Equal(issuer, []core.Word{1, 0}) || doc[3] != 42 {
+	if issuer, doc, err := core.DecodeDocID(head[1]); err != nil || !slices.Equal(issuer, []core.Word{0, 1}) || doc[3] != 42 {
 		t.Fatalf("DOC-ID: %v %v %v", issuer, doc, err)
 	}
-	porter := append([]core.Word{0x0360, 0, 1, 0, 0, 1, 2, 0x0D62}, slices.Repeat([]core.Word{0x2222}, 10)...)
+	porter := append([]core.Word{0x02D7, 0, 0, 1, 0, 0, 1, 2, 0x05DA}, slices.Repeat([]core.Word{0x2222}, 10)...)
 	if !slices.Equal(head[3].Payload, porter) {
 		t.Fatalf("porter %04X", head[3].Payload)
 	}
@@ -37,17 +37,17 @@ func TestHeadRecords(t *testing.T) {
 			t.Fatalf("not a HEAD Edge: %04X", r.Payload)
 		}
 	}
-	if _, _, err := headRecords([]core.Word{0, 1}, 42, e, prov(), freshIDs(1)); err == nil {
+	if _, _, err := headRecords([]core.Word{1}, 42, e, prov(), freshIDs(1)); err == nil {
 		t.Fatal("non-canonical Issuer: want error")
 	}
 	withSum := prov()
 	withSum.DumpSHA256 = "ab"
-	if _, _, err := headRecords([]core.Word{1, 0}, 42, e, withSum, freshIDs(1)); err == nil {
+	if _, _, err := headRecords([]core.Word{0, 1}, 42, e, withSum, freshIDs(1)); err == nil {
 		t.Fatal("short dump digest: want error")
 	}
 	bad := prov()
 	bad.Tools[1].Commit = strings.Repeat("2", 7)
-	if _, _, err := headRecords([]core.Word{1, 0}, 42, e, bad, freshIDs(1)); err == nil {
+	if _, _, err := headRecords([]core.Word{0, 1}, 42, e, bad, freshIDs(1)); err == nil {
 		t.Fatal("short commit: want error")
 	}
 }

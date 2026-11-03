@@ -1,23 +1,24 @@
 //ff:type feature=port type=model
-//ff:what codes — the GEUL codes this porter writes that the library does not name, and the Wikidata constants it reads
+//ff:what codes — the GEUL codes this porter writes, named once (the library's where it has them), and the Wikidata constants it reads
 package port
 
-// Codes the GEUL library (core) has no constant for: edge/ALIAS,
-// edge/DESCRIPTION, edge/TRIPLE,
-// edge/QUALIFIER, edge/SOURCE, LANGUAGE-SHORT-CODE, the Meta this porter writes in HEAD (TRANSFORMED-BY) and EXTERNAL-ISSUER-1WORD.
-const (
-	codecURIEven       uint8 = 0x44 // Value URI (even bytes)
-	codecLanguageShort uint8 = 0x48 // Value LANGUAGE-SHORT-CODE (value/text/LANGUAGE-SHORT-CODE)
-	edgeReferenceNode  uint8 = 0x00 // Edge REFERENCE-NODE (edge/REFERENCE-NODE)
-	edgeLabel          uint8 = 0x04 // Edge LABEL
-	edgeAlias          uint8 = 0x05 // Edge ALIAS (edge/ALIAS)
-	edgeDescription    uint8 = 0x06 // Edge DESCRIPTION (edge/DESCRIPTION)
-	edgeTriple         uint8 = 0x0A // Edge TRIPLE (edge/TRIPLE)
-	edgeQualifier      uint8 = 0x0B // Edge QUALIFIER (edge/QUALIFIER)
-	edgeSource         uint8 = 0x20 // Edge SOURCE (edge/SOURCE, 근거)
-	metaTransformedBy  uint8 = 0x33 // Meta TRANSFORMED-BY
+import "github.com/geul-org/gogeul/pkg/core"
 
-	refExternalIssuer1Word uint8 = 0x0C // Reference CCCC EXTERNAL-ISSUER-1WORD (reference/EXTERNAL-ISSUER)
+// The GEUL codes this porter writes. The Value and Meta codes and the Edge
+// codes the library names come from core, so no package keeps its own copy of
+// a number; edge/REFERENCE-NODE, LABEL, ALIAS and DESCRIPTION, which core does
+// not name, are their Edge Codec (code - 0x80, TAG 0x0800 + Codec<<4 + L).
+const (
+	codecURIEven              = core.CodecURIEven           // Value URI, even bytes (0x054L; odd 0x055L)
+	codecLanguageShort        = core.CodecLanguageShortCode // Value LANGUAGE-SHORT-CODE (0x05AL)
+	edgeReferenceNode  uint16 = 0x00                        // Edge REFERENCE-NODE (0x080L)
+	edgeLabel          uint16 = 0x04                        // Edge LABEL (0x084L)
+	edgeAlias          uint16 = 0x05                        // Edge ALIAS (0x085L)
+	edgeDescription    uint16 = 0x06                        // Edge DESCRIPTION (0x086L)
+	edgeTriple                = core.EdgeTriple             // Edge TRIPLE (0x08AL)
+	edgeQualifier             = core.EdgeQualifier          // Edge QUALIFIER (0x08BL)
+	edgeSource                = core.EdgeSource             // Edge SOURCE (0x0A0L, 근거)
+	metaTransformedBy         = core.MetaTransformedBy      // Meta TRANSFORMED-BY (0x1D4L)
 
 	schemaOrg = "http://schema.org/" // schema.org namespace as Wikidata's RDF writes it (sitelink schema:about)
 

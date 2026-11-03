@@ -4,7 +4,7 @@
 
 ## 문서
 
-- **Issuer:** `wikidata.geul.org` = `0x00010000` 하나. 위키데이터의 모든 개체 종류를 한 Issuer 아래 둔다. Q·P·L은 같은 출처를 같은 주체가 옮긴 것이라 나누지 않는다.
+- **Issuer:** `wikidata.geul.org` = `0x00000001`(2 WORD) 하나. 위키데이터의 모든 개체 종류를 한 Issuer 아래 둔다. Q·P·L은 같은 출처를 같은 주체가 옮긴 것이라 나누지 않는다.
 - **문서 단위:** 개체(QID·PID) 하나당 `.geul` 문서 하나. 덤프에 있는 모든 언어(`mul` 포함)를 한 문서에 담는다.
 - **문서 ID:** 64비트 중 맨 위 바이트가 개체 종류의 ASCII 글자, 아래 56비트가 번호다(`port.DocNumber`). hex만 보고 종류를 읽을 수 있다. 번호가 2^56 이상이면 오류다.
 
@@ -15,7 +15,7 @@
   | Lexeme L | `0x4C` | L42 → `0x4c0000000000002a` (예약. Lexeme 문서는 아직 만들지 않는다) |
   | Entity Schema E | `0x45` | E10 → `0x450000000000000a` (예약) |
 
-- **이름 색인(wikipg `export-geul -out dir`):** Issuer 디렉터리의 `documents.geul` 하나. 이름은 소문자 종류 글자 + 번호다(`q42`, `p31`). 색인은 이번 실행분과 그 Issuer 디렉터리에 이미 공표된 문서를 모두 담는다(범위를 나눠 실행해도 앞 실행의 이름이 지워지지 않는다).
+- **이름 색인(wikipg `export-geul -out dir`, deprecated 옛 판):** Issuer 디렉터리의 `documents.geul` 하나. 새 판(migration1)의 이름 색인은 `<Issuer>/docs/` 목록 문서이고 wikigeul은 쓰지 않는다(아래 pack 모드). 이름은 소문자 종류 글자 + 번호다(`q42`, `p31`). 색인은 이번 실행분과 그 Issuer 디렉터리에 이미 공표된 문서를 모두 담는다(범위를 나눠 실행해도 앞 실행의 이름이 지워지지 않는다).
 - Q·P를 가리키는 Reference(WIKIDATA-QID·PID)는 문서 위치와 상관없다.
 - **출력:** pack 모드다(아래 "pack 모드"). 디렉터리 모드는 DB 경로에만 있는 시험용이다(wikipg `export-geul -out dir`).
 - **실행 순서(디렉터리 모드):** Q 범위를 먼저 옮기고, 그 문서들이 쓴 속성(Predicate, 값이 속성 개체인 것)을 이어서 옮긴 뒤 `documents.geul`을 쓴다.
@@ -23,11 +23,11 @@
 
 ### pack 모드
 
-위키데이터 전체(약 1.2억 문서)는 디렉터리로 쓸 수 없다(파일·디렉터리 약 4.8억 개, inode 부족). pack 모드는 `<root>/.well-known/geul/0x00010000/`에 Issuer의 pack 세트(zstd)를 gogeul `pack.Stream`으로 바로 쓴다.
+위키데이터 전체(약 1.2억 문서)는 디렉터리로 쓸 수 없다(파일·디렉터리 약 4.8억 개, inode 부족). pack 모드는 `<root>/.well-known/geul/0x00000001/`에 Issuer의 pack 세트(zstd)를 gogeul `pack.Stream`으로 바로 쓴다.
 
 - **대상과 순서:** `-ids` 목록, 없으면 덤프의 모든 속성(P) 다음에 덤프의 항목 Q<from>…Q<to>(덤프에 없는 삭제·리다이렉트는 나오지 않는다). 문서 키(`0x50…` P가 `0x51…` Q 앞) 순서다. 디렉터리 모드처럼 "쓰인 속성만"을 고르지 않는다(Q를 다 옮기기 전에는 알 수 없고, 전체 변환에는 모든 속성이 필요하다).
 - **병렬:** `-workers`개 goroutine이 개체를 읽고(덤프 경로는 줄 디코드, DB 경로는 각자의 DB 연결, JIT 끔) 문서를 만들고 zstd로 압축한다. 결과는 작업 번호로 다시 줄 세워 키 순서로 넣는다. 기본 작업자 수는 덤프 경로가 CPU의 70%, DB 경로가 그 절반(작업자마다 PostgreSQL 백엔드 하나가 거의 같은 만큼 바쁘다)이다.
-- **문서와 목록:** 문서는 버전 1, 목록은 `resolve.FirstVersionList`(디렉터리 모드 Overwrite와 같은 바이트, RECORDED-AT만 `-recorded-at` 또는 실행 시작 시각으로 고정)다. 둘 다 `h/<내용 해시>.geul`로도 읽힌다(사본 없음). Edge Id는 새 세트라 1부터다(디렉터리 모드에서 처음 공표하는 문서와 같다).
+- **문서와 목록:** 문서는 버전 1, 목록은 `resolve.FirstVersionList`(디렉터리 모드 Overwrite와 같은 바이트, RECORDED-AT만 `-recorded-at` 또는 실행 시작 시각으로 고정)다. 주소는 `0x00000001/docs/<문서 ID>/0x00000001.geul`과 `…/versions.geul`이고, 둘 다 `0x00000001/hashes/<내용 해시>.geul`로도 읽힌다(사본 없음). Edge Id는 새 세트라 1부터다(디렉터리 모드에서 처음 공표하는 문서와 같다).
 - **TRANSFORMED-BY:** 모든 문서가 실행의 첫 문서와 같은 TRANSFORMED-BY(같은 wikigeul·gogeul 커밋)인지 쓰기 전에 확인한다.
 - **사전:** 실행의 첫 Q 문서 `-samples`(2048)개로 zstd 사전을 결정적으로 학습한다.
 - **이름 색인:** 쓰지 않는다. 1.2억 이름이면 약 4 GB 문서 하나라 받을 수 없고, 이름은 문서 ID에서 정해진다(geul-dev `files/pack/README.md` §6.1, O6).
@@ -69,8 +69,8 @@ Edge Id(LOCAL ID)는 버전을 넘어 유지한다. 다시 생성할 때 직전 
 | time, 그레고리력 월·연·10년 정밀도 | EDTF |
 | time, 율리우스력 일·월·연 정밀도 | GEDCOM-DATE (`JULIAN 14 OCT 1066`) |
 | time, 그 밖(세기 이상 정밀도, 시간대·오차 범위 등) | datavalue JSON 원문을 UTF8-TEXT로. 날짜는 건너뛰지 않는다 |
-| somevalue (본 값, qualifier) | 자리 표지 UNKNOWN-VALUE `0x0001` (값이 있으나 무엇인지 모른다). rank·qualifier 순서는 그대로 |
-| novalue (본 값, qualifier) | 자리 표지 NO-VALUE `0x0002` (그 qualifier 범위 안에서 값이 없다). 본 값 novalue의 값 qualifier(P580·P582 등)도 함께 옮긴다 |
+| somevalue (본 값, qualifier) | 자리 표지 UNKNOWN-VALUE `0x0010` (값이 있으나 무엇인지 모른다). rank·qualifier 순서는 그대로 |
+| novalue (본 값, qualifier) | 자리 표지 NO-VALUE `0x0020` (그 qualifier 범위 안에서 값이 없다). 본 값 novalue의 값 qualifier(P580·P582 등)도 함께 옮긴다 |
 | monolingualtext | UTF8-LANGUAGE-TEXT (언어는 LANGUAGE-SHORT-CODE 또는 LANGUAGE-BCP47-CODE, 아래 언어 코드 대응). 그래도 BCP 47 형식이 아니면(빈 언어) datavalue 원문을 UTF8-TEXT로 |
 | globecoordinate | 지구(Q2)는 COORDINATE-EARTH, 다른 천체는 COORDINATE-GEO(천체 = WIKIDATA-QID). precision은 환산 없이 불확도(binary32)와 단위 QID로 옮긴다: 도 Q28390·각분 Q209426·각초 Q829073 순서로, 역변환(`port.precisionText`)이 precision 원문을 바이트 그대로 되돌리는 첫 단위(`port.coordinatePrecision`). precision 없음은 미상(단위 ABSENT). 원문을 되돌리지 못하는 precision·천체 없음·고도 있음·범위 밖은 datavalue 원문을 UTF8-TEXT로 |
 | quantity | QUANTITY(amount·단위·하한·상한). 수와 경계는 자릿수 그대로, 단위 `1`은 무단위(ABSENT 표지), 위키데이터 항목 단위는 WIKIDATA-QID. 그 밖의 단위·형식은 원문 UTF8-TEXT |
@@ -86,9 +86,9 @@ Edge Id(LOCAL ID)는 버전을 넘어 유지한다. 다시 생성할 때 직전 
 
 ### GEUL Language Registry
 
-- 레지스트리는 공표 아카이브의 LANGUAGE-SHORT-CODE Codec 규격 문서 `0x0000/0x0000000000000848`의 ENUM(코드값)과 BIND(BCP 47 tag)다. wikigeul은 대응표를 코드에 두지 않고, 실행을 시작할 때 GEUL 라이브러리의 resolve 경로로 그 문서의 한 버전을 한 번 읽는다(`languageRegistry`, `codecspec.Spec.Languages`). 한 실행의 모든 문서는 같은 판으로 변환된다.
+- 레지스트리는 공표 아카이브의 LANGUAGE-SHORT-CODE 코덱 문서 `0x00000000/codecs/0x000005a0`의 ENUM(코드값)과 BIND(BCP 47 tag)다. wikigeul은 대응표를 코드에 두지 않고, 실행을 시작할 때 GEUL 라이브러리의 resolve 경로로 그 문서의 한 버전을 한 번 읽는다(`languageRegistry`, `codecspec.Spec.Languages`). 한 실행의 모든 문서는 같은 판으로 변환된다.
 - `-langreg-version N`이 읽을 버전을 고정한다. 0(기본)이면 실행 시작 시점의 최신판이다. `-langreg-root`는 규격 문서를 읽을 아카이브다(기본 `-root`).
-- 읽은 판(`0x0000/0x0000000000000848@n`과 내용 해시)은 실행 출력의 `language registry:` 줄과 보고서 첫 줄(`-langreg`)에 남는다. 문서 HEAD에는 적지 않는다. 문법은 코덱북 문서를 IMPORT-DOC으로 가져오지 않고(SPEC-VERSION이 정한다), 레지스트리는 덧붙이기만 하므로 어느 문서의 SHORT-CODE든 그 뒤 모든 판에서 같은 tag로 읽힌다.
+- 읽은 판(`0x00000000/codecs/0x000005a0@n`과 내용 해시)은 실행 출력의 `language registry:` 줄과 보고서 첫 줄(`-langreg`)에 남는다. 문서 HEAD에는 적지 않는다. 문법은 코덱북 문서를 IMPORT-DOC으로 가져오지 않고(SPEC-VERSION이 정한다), 레지스트리는 덧붙이기만 하므로 어느 문서의 SHORT-CODE든 그 뒤 모든 판에서 같은 tag로 읽힌다.
 - 판이 바뀌면 결과가 바뀔 수 있다(새로 번호를 받은 tag가 BCP47에서 SHORT-CODE로). 같은 판·같은 덤프·같은 커밋이면 같은 바이트다.
 - 레지스트리 판 v2(IANA File-Date 2026-09-17) 기준으로 위키데이터 코드 1,488개 중 1,472개가 번호를 받는다. 번호가 없는 16개는 아래 사설 확장 13개(`simple`의 `en-simple`은 번호가 있다)와 `be-x-old`, `nl-u-sd-bebru`, `en-uk`다.
 - 알려진 차이(처리 그대로, 레지스트리로 바뀐 것 없음): `en-uk`는 region `UK`가 IANA에 없어 BCP 47로 무효다. 형식은 맞으므로 LANGUAGE-BCP47-CODE `en-UK`로 쓴다(MediaWiki 관례로는 `en-GB`지만 `en-gb`도 위키데이터 코드라 일대일을 지키려면 따로 정해야 한다). `sr-ec`(위키미디어: 세르비아어 키릴 문자, BCP 47: 에콰도르의 세르비아어), `kk-cn`·`kk-tr`·`kk-kz`(위키미디어: 문자 변이, BCP 47: 지역), `als`(위키미디어: 알레만어, IANA: 토스크 알바니아어)는 형식이 유효해 레지스트리 번호를 받지만 BCP 47 뜻은 위키미디어 뜻과 다르다. 이 뜻 차이는 대응표가 풀 문제로 남긴다.

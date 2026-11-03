@@ -28,7 +28,7 @@ func TestBuildDocMarkers(t *testing.T) {
 			{Property: "P575", Rank: "normal", SnakType: "somevalue", Qualifiers: []source.Qualifier{{Property: "P3831", Type: "wikibase-entityid", Value: "Q2", SnakType: "value"}}},
 		},
 	}
-	b, rep, err := BuildDoc(e, []core.Word{1, 0}, prov(), freshIDs(1), nil)
+	b, rep, err := BuildDoc(e, []core.Word{0, 1}, prov(), freshIDs(1), nil)
 	if err != nil || rep.Triples != 5 || rep.Qualifiers != 5 || len(rep.Skipped) != 0 ||
 		rep.Markers["UNKNOWN-VALUE"] != 1 || rep.Markers["NO-VALUE"] != 2 || rep.Markers["qualifier UNKNOWN-VALUE"] != 1 {
 		t.Fatalf("report %+v %v", rep, err)
@@ -38,12 +38,12 @@ func TestBuildDocMarkers(t *testing.T) {
 	}
 	d, _ := inspect.Decode(b)
 	want := [][]core.Word{
-		{0x148A, 0x0088, 5, 0x00A8, 47, 0x00A0, 30, 0x00A0, 34266, 0},
-		{0x138B, 0x0088, 6, 0x00A8, 582, 0x0088, 5, core.UnknownValue},
-		{0x148A, 0x0088, 7, 0x00A8, 1304, 0x00A0, 30, 0x00A0, 53536, 1},
-		{0x140A, 0x0088, 8, 0x00A8, 1304, 0x00A0, 30, core.NoValue, 0},
-		{0x148B, 0x0088, 9, 0x00A8, 580, 0x0088, 8, 0x0924, 0x3138, 0x3131},
-		{0x148B, 0x0088, 10, 0x00A8, 582, 0x0088, 8, 0x0924, 0x3138, 0x3136},
+		{0x08A9, 0x0051, 5, 0x0191, 47, 0x0141, 30, 0x0141, 34266, 0},
+		{0x08B7, 0x0051, 6, 0x0191, 582, 0x0051, 5, core.UnknownValue},
+		{0x08A9, 0x0051, 7, 0x0191, 1304, 0x0141, 30, 0x0141, 53536, 1},
+		{0x08A8, 0x0051, 8, 0x0191, 1304, 0x0141, 30, core.NoValue, 0},
+		{0x08B9, 0x0051, 9, 0x0191, 580, 0x0051, 8, 0x04E2, 0x3138, 0x3131},
+		{0x08B9, 0x0051, 10, 0x0191, 582, 0x0051, 8, 0x04E2, 0x3138, 0x3136},
 	}
 	if len(d.Body) < len(want)+1 || d.Body[0].Record.Codec != edgeReferenceNode {
 		t.Fatalf("body %d", len(d.Body))

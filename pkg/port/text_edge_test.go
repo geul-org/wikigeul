@@ -15,7 +15,7 @@ func TestTextEdge(t *testing.T) {
 	subj, _ := entityRef("Q42")
 	r, ok := textEdge(edgeAlias, freshIDs(3), subj, source.Text{Lang: "en", Value: "DNA"}, nil)
 	ws, _ := core.EncodeRecord(r)
-	if !ok || !slices.Equal(ws, []core.Word{0x1485, 0x0088, 0x0003, 0x00A0, 0x002A, 0x0A4B, 0x08C6, 0x656E, 0x444E, 0x4100}) {
+	if !ok || !slices.Equal(ws, []core.Word{0x0859, 0x0051, 0x0003, 0x0141, 0x002A, 0x0594, 0x0561, 0x656E, 0x444E, 0x4100}) {
 		t.Fatalf("got %04X", ws)
 	}
 	if _, ok := textEdge(edgeLabel, freshIDs(1), subj, source.Text{Lang: "x y", Value: "z"}, nil); ok {

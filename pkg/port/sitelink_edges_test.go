@@ -20,11 +20,11 @@ func TestSitelinkEdges(t *testing.T) {
 		{Site: "enwiki", Title: "Douglas Adams", Badges: []string{"Q17437796"}},
 		{Site: "kowiki", Title: "더글러스 애덤스"},
 	}, &rep)
-	var codecs []uint8
+	var codecs []uint16
 	for _, r := range rs {
 		codecs = append(codecs, r.Codec)
 	}
-	want := []uint8{edgeReferenceNode, edgeReferenceNode, edgeTriple, edgeReferenceNode, edgeTriple, edgeReferenceNode, edgeTriple}
+	want := []uint16{edgeReferenceNode, edgeReferenceNode, edgeTriple, edgeReferenceNode, edgeTriple, edgeReferenceNode, edgeTriple}
 	if !slices.Equal(codecs, want) || rep.Sitelinks != 2 || rep.Badges != 1 || rep.Skipped["sitelink 사이트: xxsite"] != 1 {
 		t.Fatalf("codecs %02X rep %+v", codecs, rep)
 	}
@@ -42,7 +42,7 @@ func TestSitelinkEdges(t *testing.T) {
 	} else if b, _ := core.DecodeBytesValue(obj, codecURIEven); string(b) != "https://en.wikipedia.org/wiki/Douglas_Adams" {
 		t.Fatalf("page %q", b)
 	}
-	if !slices.Equal(rs[2].Payload, []core.Word{0x0088, 5, 0x0088, 2, 0x0088, 4, 0x00A0, 42, 0}) {
+	if !slices.Equal(rs[2].Payload, []core.Word{0x0051, 5, 0x0051, 2, 0x0051, 4, 0x0141, 42, 0}) {
 		t.Fatalf("about triple %04X", rs[2].Payload)
 	}
 	if rs := sitelinkEdges(ids, subject, nil, &rep); rs != nil {

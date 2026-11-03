@@ -13,7 +13,7 @@ import (
 // leaving an error in its second argument; one goroutine per loader converts
 // them (convertJobs) and the writer puts the results in document key order
 // (packWriter.take), each document as version 1 with its version list, served
-// under h/ by content hash without a copy. The report is opened fresh or cut
+// under `<Issuer>/hashes/` by content hash without a copy. The report is opened fresh or cut
 // back to the checkpoint (newPackWriter). A run resumed after every entity was
 // in (PackProgress.Drained: it stopped while the stream closed) lists nothing
 // again and goes straight to Close. c.Guard gates the workers, which climb

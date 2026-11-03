@@ -12,7 +12,7 @@ func TestQualifiersOn(t *testing.T) {
 	a := freshIDs(1)
 	p813, _ := entityRef("P813")
 	q, _ := entityRef("Q1")
-	broken := core.Record{Kind: core.KindEdge, Codec: edgeQualifier, Payload: []core.Word{0x0088, 9, 0x00A8}}
+	broken := core.Record{Kind: core.KindEdge, Codec: edgeQualifier, Payload: []core.Word{0x0051, 9, 0x0191}}
 	got := qualifiersOn([]core.Record{qualifierEdge(a, p813, 5, q), broken, core.EncodeLocalRef(1), qualifierEdge(a, q, 5, p813)})
 	if len(got) != 1 || len(got[5]) != 2 || got[5][0] != snakText(wordsOf(p813), wordsOf(q)) {
 		t.Fatalf("%v", got)
