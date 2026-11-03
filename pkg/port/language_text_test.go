@@ -12,7 +12,7 @@ import (
 func TestLanguageText(t *testing.T) {
 	r, ok := languageText(nil, "fr", "Paris")
 	ws, _ := core.EncodeRecord(r)
-	if !ok || !slices.Equal(ws, []core.Word{0x0595, 0x0561, 0x6672, 0x5061, 0x7269, 0x7300}) {
+	if !ok || !slices.Equal(ws, []core.Word{0x0795, 0x0761, 0x6672, 0x5061, 0x7269, 0x7300}) {
 		t.Fatalf("got %04X %v", ws, ok)
 	}
 	r, _ = languageText(nil, "sr-el", "Beograd")
@@ -25,7 +25,7 @@ func TestLanguageText(t *testing.T) {
 	}
 	langs := Languages{"en-simple": 0x40E8, "fr": 0x0597}
 	r, _ = languageText(langs, "simple", "Paris")
-	if ws, _ := core.EncodeRecord(r); !slices.Equal(ws[:3], []core.Word{0x0595, 0x05A1, 0x40E8}) {
+	if ws, _ := core.EncodeRecord(r); !slices.Equal(ws[:3], []core.Word{0x0795, 0x07A1, 0x40E8}) {
 		t.Fatalf("simple → en-simple in the registry: %04X", ws)
 	}
 	r, _ = languageText(langs, "de-formal", "Sie")

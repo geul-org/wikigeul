@@ -11,7 +11,7 @@ import (
 
 func TestToolRef(t *testing.T) {
 	ws, err := core.EncodeRecord(toolRef(1))
-	if err != nil || !slices.Equal(ws, []core.Word{0x02D7, 0x0000, 0x0000, 0x0001, 0, 0, 0x0001, 0x0002}) {
+	if err != nil || !slices.Equal(ws, []core.Word{0x02F7, 0x0000, 0x0000, 0x0001, 0, 0, 0x0001, 0x0002}) {
 		t.Fatalf("got %04X %v", ws, err)
 	}
 }

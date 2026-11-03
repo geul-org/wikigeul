@@ -1,5 +1,5 @@
 //ff:func feature=port type=helper control=iteration dimension=1
-//ff:what TestTextKindTagSpace — over the 320 Edge codes only LABEL 0x084L, ALIAS 0x085L and DESCRIPTION 0x086L name a text Edge
+//ff:what TestTextKindTagSpace — over the 288 Edge codes only LABEL 0x0A4L, ALIAS 0x0A5L and DESCRIPTION 0x0A6L name a text Edge
 package port
 
 import (
@@ -9,7 +9,7 @@ import (
 )
 
 func TestTextKindTagSpace(t *testing.T) {
-	names := map[uint16]string{0x084: "LABEL", 0x085: "ALIAS", 0x086: "DESCRIPTION"} // §3.5 Edge 번호
+	names := map[uint16]string{0x0A4: "LABEL", 0x0A5: "ALIAS", 0x0A6: "DESCRIPTION"} // §3.5 Edge 번호
 	for _, c := range tagSpaceCodes() {
 		if c.Kind != core.KindEdge {
 			continue

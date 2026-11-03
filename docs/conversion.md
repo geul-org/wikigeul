@@ -86,9 +86,9 @@ Edge Id(LOCAL ID)는 버전을 넘어 유지한다. 다시 생성할 때 직전 
 
 ### GEUL Language Registry
 
-- 레지스트리는 공표 아카이브의 LANGUAGE-SHORT-CODE 코덱 문서 `0x00000000/codecs/0x000005a0`의 ENUM(코드값)과 BIND(BCP 47 tag)다. wikigeul은 대응표를 코드에 두지 않고, 실행을 시작할 때 GEUL 라이브러리의 resolve 경로로 그 문서의 한 버전을 한 번 읽는다(`languageRegistry`, `codecspec.Spec.Languages`). 한 실행의 모든 문서는 같은 판으로 변환된다.
+- 레지스트리는 공표 아카이브의 LANGUAGE-SHORT-CODE 코덱 문서 `0x00000000/codecs/0x000007a0`의 ENUM(코드값)과 BIND(BCP 47 tag)다. wikigeul은 대응표를 코드에 두지 않고, 실행을 시작할 때 GEUL 라이브러리의 resolve 경로로 그 문서의 한 버전을 한 번 읽는다(`languageRegistry`, `codecspec.Spec.Languages`). 한 실행의 모든 문서는 같은 판으로 변환된다.
 - `-langreg-version N`이 읽을 버전을 고정한다. 0(기본)이면 실행 시작 시점의 최신판이다. `-langreg-root`는 규격 문서를 읽을 아카이브다(기본 `-root`).
-- 읽은 판(`0x00000000/codecs/0x000005a0@n`과 내용 해시)은 실행 출력의 `language registry:` 줄과 보고서 첫 줄(`-langreg`)에 남는다. 문서 HEAD에는 적지 않는다. 문법은 코덱북 문서를 IMPORT-DOC으로 가져오지 않고(SPEC-VERSION이 정한다), 레지스트리는 덧붙이기만 하므로 어느 문서의 SHORT-CODE든 그 뒤 모든 판에서 같은 tag로 읽힌다.
+- 읽은 판(`0x00000000/codecs/0x000007a0@n`과 내용 해시)은 실행 출력의 `language registry:` 줄과 보고서 첫 줄(`-langreg`)에 남는다. 문서 HEAD에는 적지 않는다. 문법은 코덱북 문서를 IMPORT-DOC으로 가져오지 않고(SPEC-VERSION이 정한다), 레지스트리는 덧붙이기만 하므로 어느 문서의 SHORT-CODE든 그 뒤 모든 판에서 같은 tag로 읽힌다.
 - 판이 바뀌면 결과가 바뀔 수 있다(새로 번호를 받은 tag가 BCP47에서 SHORT-CODE로). 같은 판·같은 덤프·같은 커밋이면 같은 바이트다.
 - 레지스트리 판 v2(IANA File-Date 2026-09-17) 기준으로 위키데이터 코드 1,488개 중 1,472개가 번호를 받는다. 번호가 없는 16개는 아래 사설 확장 13개(`simple`의 `en-simple`은 번호가 있다)와 `be-x-old`, `nl-u-sd-bebru`, `en-uk`다.
 - 알려진 차이(처리 그대로, 레지스트리로 바뀐 것 없음): `en-uk`는 region `UK`가 IANA에 없어 BCP 47로 무효다. 형식은 맞으므로 LANGUAGE-BCP47-CODE `en-UK`로 쓴다(MediaWiki 관례로는 `en-GB`지만 `en-gb`도 위키데이터 코드라 일대일을 지키려면 따로 정해야 한다). `sr-ec`(위키미디어: 세르비아어 키릴 문자, BCP 47: 에콰도르의 세르비아어), `kk-cn`·`kk-tr`·`kk-kz`(위키미디어: 문자 변이, BCP 47: 지역), `als`(위키미디어: 알레만어, IANA: 토스크 알바니아어)는 형식이 유효해 레지스트리 번호를 받지만 BCP 47 뜻은 위키미디어 뜻과 다르다. 이 뜻 차이는 대응표가 풀 문제로 남긴다.

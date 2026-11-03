@@ -21,13 +21,13 @@ func TestTimeRecord(t *testing.T) {
 		ws, _ := core.EncodeRecord(r)
 		return ws
 	}
-	if ws := enc(tv("+1952-03-11T00:00:00Z", "11", gregorian)); !slices.Equal(ws, []core.Word{0x04A2, 0xFFFF, 0xE697}) {
+	if ws := enc(tv("+1952-03-11T00:00:00Z", "11", gregorian)); !slices.Equal(ws, []core.Word{0x06A2, 0xFFFF, 0xE697}) {
 		t.Fatalf("day: %04X", ws)
 	}
-	if ws := enc(tv("+1974-00-00T00:00:00Z", "9", gregorian)); !slices.Equal(ws, []core.Word{0x04E2, 0x3139, 0x3734}) {
+	if ws := enc(tv("+1974-00-00T00:00:00Z", "9", gregorian)); !slices.Equal(ws, []core.Word{0x06E2, 0x3139, 0x3734}) {
 		t.Fatalf("year: %04X", ws)
 	}
-	if ws := enc(tv("+1300-00-00T00:00:00Z", "9", julian)); !slices.Equal(ws, []core.Word{0x0516, 0x4A55, 0x4C49, 0x414E, 0x2031, 0x3330, 0x3000}) {
+	if ws := enc(tv("+1300-00-00T00:00:00Z", "9", julian)); !slices.Equal(ws, []core.Word{0x0716, 0x4A55, 0x4C49, 0x414E, 0x2031, 0x3330, 0x3000}) {
 		t.Fatalf("julian: %04X", ws)
 	}
 	for want, v := range map[string]string{

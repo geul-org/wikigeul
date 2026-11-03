@@ -6,7 +6,7 @@ import "github.com/geul-org/gogeul/pkg/core"
 
 // Languages is the GEUL Language Registry (value/text/LANGUAGE-SHORT-CODE):
 // each BCP 47 tag the LANGUAGE-SHORT-CODE codec spec document
-// (codec 0x00000000/codecs/0x000005a0) numbers, in lower case (tags compare without
+// (codec 0x00000000/codecs/0x000007a0) numbers, in lower case (tags compare without
 // case), to its 1-WORD code. It is read from one version of that document
 // (pipeline.LoadLanguages), never written into this code. nil is no
 // registry: every language is then a LANGUAGE-BCP47-CODE.

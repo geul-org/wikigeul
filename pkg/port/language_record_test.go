@@ -13,7 +13,7 @@ func TestLanguageRecord(t *testing.T) {
 	langs := Languages{"en": 0x0784, "pt-br": 0x4130, "en-simple": 0x40e8}
 	for tag, code := range map[string]core.Word{"en": 0x0784, "pt-br": 0x4130, "PT-BR": 0x4130, "pt-BR": 0x4130, "en-simple": 0x40E8} {
 		ws, _ := core.EncodeRecord(languageRecord(langs, tag))
-		if !slices.Equal(ws, []core.Word{0x05A1, code}) {
+		if !slices.Equal(ws, []core.Word{0x07A1, code}) {
 			t.Errorf("%s: %04X", tag, ws)
 		}
 	}

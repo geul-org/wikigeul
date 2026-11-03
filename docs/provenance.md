@@ -27,7 +27,7 @@ TRANSFORMED-BY 둘을 둔다. 도구 Reference는 geul.org 용어 정의 문서(
 
 ## statement 출처 (references)
 
-statement의 출처는 근거 Edge SOURCE(`0x0A0L`)로 옮긴다. 위키데이터 reference 하나가 SOURCE 하나다.
+statement의 출처는 근거 Edge SOURCE(`0x0C0L`)로 옮긴다. 위키데이터 reference 하나가 SOURCE 하나다.
 
 ```
 TRIPLE     #178   P19   Q42   Q350  normal

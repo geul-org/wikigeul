@@ -37,13 +37,13 @@ func TestBuildDocLanguages(t *testing.T) {
 		}
 		return n
 	}
-	if n := count(0x05A1, 0x0784); n != 3 {
+	if n := count(0x07A1, 0x0784); n != 3 {
 		t.Errorf("en as SHORT-CODE: %d, want 3 (label, value, reference)", n)
 	}
-	if n := count(0x05A1, 0x4130); n != 1 {
+	if n := count(0x07A1, 0x4130); n != 1 {
 		t.Errorf("pt-BR as SHORT-CODE: %d", n)
 	}
-	if n := count(0x0573, 0x656E, 0x2D55, 0x4B00); n != 1 { // "en-UK", canonical case, LANGUAGE-BCP47-CODE-ODD
+	if n := count(0x0773, 0x656E, 0x2D55, 0x4B00); n != 1 { // "en-UK", canonical case, LANGUAGE-BCP47-CODE-ODD
 		t.Errorf("en-uk as BCP 47 en-UK: %d", n)
 	}
 }

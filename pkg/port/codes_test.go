@@ -16,17 +16,17 @@ func TestCodes(t *testing.T) {
 		codec uint16
 		tag   core.Word
 	}{
-		{"URI-EVEN", core.KindValue, codecURIEven, 0x0540},
-		{"LANGUAGE-SHORT-CODE", core.KindValue, codecLanguageShort, 0x05A0},
-		{"REFERENCE-NODE", core.KindEdge, edgeReferenceNode, 0x0800},
-		{"LABEL", core.KindEdge, edgeLabel, 0x0840},
-		{"ALIAS", core.KindEdge, edgeAlias, 0x0850},
-		{"DESCRIPTION", core.KindEdge, edgeDescription, 0x0860},
-		{"TRIPLE", core.KindEdge, edgeTriple, 0x08A0},
-		{"QUALIFIER", core.KindEdge, edgeQualifier, 0x08B0},
-		{"SOURCE", core.KindEdge, edgeSource, 0x0A00},
+		{"URI-EVEN", core.KindValue, codecURIEven, 0x0740},
+		{"LANGUAGE-SHORT-CODE", core.KindValue, codecLanguageShort, 0x07A0},
+		{"REFERENCE-NODE", core.KindEdge, edgeReferenceNode, 0x0A00},
+		{"LABEL", core.KindEdge, edgeLabel, 0x0A40},
+		{"ALIAS", core.KindEdge, edgeAlias, 0x0A50},
+		{"DESCRIPTION", core.KindEdge, edgeDescription, 0x0A60},
+		{"TRIPLE", core.KindEdge, edgeTriple, 0x0AA0},
+		{"QUALIFIER", core.KindEdge, edgeQualifier, 0x0AB0},
+		{"SOURCE", core.KindEdge, edgeSource, 0x0C00},
 		{"TRANSFORMED-BY", core.KindMeta, metaTransformedBy, 0x1D40},
-		{"EXTERNAL-ISSUER-2WORD", core.KindReference, toolRef(1).Codec, 0x02D0},
+		{"EXTERNAL-ISSUER-2WORD", core.KindReference, toolRef(1).Codec, 0x02F0},
 	}
 	for _, w := range want {
 		if got := core.TargetWord(w.kind, w.codec); got != w.tag {

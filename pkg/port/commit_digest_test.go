@@ -13,7 +13,7 @@ import (
 func TestCommitDigest(t *testing.T) {
 	r, err := CommitDigest("ddc0719974a32aaa7b422ee84221a9721085ce4c")
 	ws, _ := core.EncodeRecord(r)
-	if err != nil || !slices.Equal(ws, []core.Word{0x05DA, 0xddc0, 0x7199, 0x74a3, 0x2aaa, 0x7b42, 0x2ee8, 0x4221, 0xa972, 0x1085, 0xce4c}) {
+	if err != nil || !slices.Equal(ws, []core.Word{0x07DA, 0xddc0, 0x7199, 0x74a3, 0x2aaa, 0x7b42, 0x2ee8, 0x4221, 0xa972, 0x1085, 0xce4c}) {
 		t.Fatalf("sha1: %04X %v", ws, err)
 	}
 	if r, err := CommitDigest(strings.Repeat("ab", 32)); err != nil || r.Codec != core.CodecSHA256Digest || len(r.Payload) != 16 || r.Payload[0] != 0xabab {

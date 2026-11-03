@@ -28,7 +28,7 @@ func TestHeadRecords(t *testing.T) {
 	if issuer, doc, err := core.DecodeDocID(head[1]); err != nil || !slices.Equal(issuer, []core.Word{0, 1}) || doc[3] != 42 {
 		t.Fatalf("DOC-ID: %v %v %v", issuer, doc, err)
 	}
-	porter := append([]core.Word{0x02D7, 0, 0, 1, 0, 0, 1, 2, 0x05DA}, slices.Repeat([]core.Word{0x2222}, 10)...)
+	porter := append([]core.Word{0x02F7, 0, 0, 1, 0, 0, 1, 2, 0x07DA}, slices.Repeat([]core.Word{0x2222}, 10)...)
 	if !slices.Equal(head[3].Payload, porter) {
 		t.Fatalf("porter %04X", head[3].Payload)
 	}

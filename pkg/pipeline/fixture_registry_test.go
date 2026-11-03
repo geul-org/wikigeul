@@ -10,9 +10,9 @@ import (
 	"github.com/geul-org/gogeul/pkg/resolve"
 )
 
-// fixtureRegistry publishes, as version 1 of the codec 0x00000000/codecs/0x000005a0, a
+// fixtureRegistry publishes, as version 1 of the codec 0x00000000/codecs/0x000007a0, a
 // codec document like the real one: DOC-ID CODEC-POINTER(0x00000000,
-// 0x000005a0, 0), DECLARE 0x05A0 (LANGUAGE-SHORT-CODE), the 1-WORD FIELD code and
+// 0x000007a0, 0), DECLARE 0x07A0 (LANGUAGE-SHORT-CODE), the 1-WORD FIELD code and
 // one ENUM with its BIND per tag, here en 0x0784, pt-BR 0x4130, zh-Hans 0x404c
 // (only those in tags when any are given; tags naming none gives a spec
 // without codes).

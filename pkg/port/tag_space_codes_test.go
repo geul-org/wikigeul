@@ -6,14 +6,13 @@ import "github.com/geul-org/gogeul/pkg/core"
 
 // tagSpaceCodes lists every code 0x000~0x1FF in order (tagCode).
 func tagSpaceCodes() []tagCode {
-	zones := [8]struct {
-		kind core.Kind
-		base uint16
-	}{{core.KindReference, 0x000}, {core.KindValue, 0x040}, {core.KindEdge, 0x080}, {core.KindEdge, 0x080}, {core.KindEdge, 0x080}, {core.KindEdge, 0x080}, {core.KindEdge, 0x080}, {core.KindMeta, 0x1C0}}
+	const r, v, e, m = core.KindReference, core.KindValue, core.KindEdge, core.KindMeta
+	kinds := [16]core.Kind{r, r, r, v, v, e, e, e, e, e, e, e, e, e, m, m} // migration1 §3.15, by section KKKK
+	base := map[core.Kind]uint16{r: 0x000, v: 0x060, e: 0x0A0, m: 0x1C0}
 	out := make([]tagCode, 0, 512)
 	for code := uint16(0); code < 0x200; code++ {
-		z := zones[code>>6]
-		out = append(out, tagCode{Code: code, Kind: z.kind, Codec: code - z.base})
+		k := kinds[code>>5]
+		out = append(out, tagCode{Code: code, Kind: k, Codec: code - base[k]})
 	}
 	return out
 }
