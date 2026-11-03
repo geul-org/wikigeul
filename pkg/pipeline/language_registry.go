@@ -14,7 +14,7 @@ import (
 )
 
 // registryDoc is the codec ID of the LANGUAGE-SHORT-CODE codec document of the
-// GEUL Issuer 0x00000000: its TAG with L=0 as 2 words, 0x000007a0
+// GEUL Issuer 0x00000000: its TAG with L=0 as 2 words, 0x000007A0
 // (§3.13 `0x00000000/codecs/<코덱 ID>/`).
 var registryDoc = []core.Word{0, core.TargetWord(core.KindValue, core.CodecLanguageShortCode)}
 
@@ -22,7 +22,7 @@ var registryDoc = []core.Word{0, core.TargetWord(core.KindValue, core.CodecLangu
 // from dir (v 0: the newest neither deprecated nor deleted, fixed once here
 // for the whole run) through the GEUL library's resolve path, and returns the
 // registry its ENUMs and BINDs declare (codecspec.Spec.Languages, registryOf)
-// and the version it read as `0x00000000/codecs/0x000007a0@n 0x<content
+// and the version it read as `0x00000000/codecs/0x000007A0@n 0x<content
 // hash>`, which the run prints and the report records. A document without
 // registry is an error.
 func languageRegistry(dir resolve.Dir, v uint32) (port.Languages, string, error) {
@@ -44,5 +44,5 @@ func languageRegistry(dir resolve.Dir, v uint32) (port.Languages, string, error)
 	if err != nil {
 		return nil, "", err
 	}
-	return langs, fmt.Sprintf("%s@%d 0x%x", where, e.Version, e.Hash), nil
+	return langs, fmt.Sprintf("%s@%d 0x%X", where, e.Version, e.Hash), nil
 }

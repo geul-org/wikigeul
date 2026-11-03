@@ -33,7 +33,7 @@ func TestRunDump(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err := r.Fetch(context.Background(), "0x00000001/docs/0x510000000000002a/0x00000001.geul"); err != nil {
+	if _, err := r.Fetch(context.Background(), "0x00000001/docs/0x510000000000002A/0x00000001.geul"); err != nil {
 		t.Fatal(err)
 	}
 	b, _ := os.ReadFile(rep)

@@ -24,7 +24,7 @@ func TestLanguageRegistry(t *testing.T) {
 		t.Fatalf("%v %v", langs, err)
 	}
 	h, _ := dir.Log([]core.Word{0, 0}, registryDoc)
-	if doc != fmt.Sprintf("0x00000000/codecs/0x000007a0@1 0x%x", h.Entries[0].Hash) {
+	if doc != fmt.Sprintf("0x00000000/codecs/0x000007A0@1 0x%X", h.Entries[0].Hash) {
 		t.Fatalf("doc %q", doc)
 	}
 	if _, doc1, err := languageRegistry(dir, 1); err != nil || doc1 != doc {
@@ -38,7 +38,7 @@ func TestLanguageRegistry(t *testing.T) {
 	if _, _, err := languageRegistry(resolve.Dir{Root: empty}, 0); err == nil {
 		t.Fatal("spec without codes: want error")
 	}
-	if err := os.Remove(filepath.Join(root, ".well-known/geul/0x00000000/codecs/0x000007a0/0x00000001.geul")); err != nil {
+	if err := os.Remove(filepath.Join(root, ".well-known/geul/0x00000000/codecs/0x000007A0/0x00000001.geul")); err != nil {
 		t.Fatal(err)
 	}
 	if _, _, err := languageRegistry(dir, 0); err == nil {

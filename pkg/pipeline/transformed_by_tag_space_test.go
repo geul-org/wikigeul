@@ -21,7 +21,7 @@ func TestTransformedByTagSpace(t *testing.T) {
 		if want := code == 0x1D4; read != want { // §3.5 TRANSFORMED-BY 0x1D4L
 			t.Errorf("0x%03XL: read %v want %v", code, read, want)
 		}
-		if code == 0x1D4 && got != "0x1d4200510007" {
+		if code == 0x1D4 && got != "0x1D4200510007" {
 			t.Errorf("TRANSFORMED-BY: %q", got)
 		}
 	}
