@@ -8,7 +8,7 @@ import (
 )
 
 // Config is one conversion run, whichever input it reads: the archive root
-// (geul-dev draft/geul-org/artifacts/geul) whose .well-known/geul receives
+// (geul-dev draft) whose .well-known/geul receives
 // the documents, the QID range [From, To] (every language is written: one
 // document per entity holds them all), the porter and GEUL library commits
 // recorded in TRANSFORMED-BY and where the report goes. Schema and Dump name

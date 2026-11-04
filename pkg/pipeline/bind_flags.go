@@ -12,7 +12,7 @@ import (
 // filling c, with -workers defaulting to workers and described by usage. The
 // returned check (checkFlags) runs after fs.Parse.
 func BindFlags(fs *flag.FlagSet, c *Config, workers int, usage string) func() error {
-	fs.StringVar(&c.Root, "root", ".", "archive root holding .well-known/geul (geul-dev draft/geul-org/artifacts/geul)")
+	fs.StringVar(&c.Root, "root", ".", "archive root holding .well-known/geul (geul-dev draft)")
 	fs.Uint64Var(&c.From, "from", 1, "first QID number")
 	fs.Uint64Var(&c.To, "to", 1000, "last QID number")
 	fs.StringVar(&c.Commit, "commit", "", "wikigeul (converter) git commit, full ID (required)")
