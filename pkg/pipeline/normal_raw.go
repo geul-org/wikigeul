@@ -12,7 +12,7 @@ import "strings"
 // (0–5, 천년, 세기; and 10년 for Julian dates) that EDTF or GEDCOM has no
 // form for, a BCE or 5+ digit decade, a Y-prefixed year go-edtf cannot
 // check and a day-precision date that is no calendar day. The pre-survey of
-// dump 1 (pre-survey-2026-10-30) added data errors kept as written: a
+// dump 1 (2026-10-30) added data errors kept as written: a
 // Gregorian year 0 below day precision, a day out of the int32 day range, a
 // coordinate out of its degree range (Earth longitude beyond ±180, latitude
 // beyond ±90) and the six calendar model typos it found, each by its exact

@@ -7,7 +7,7 @@ import "github.com/geul-org/gogeul/pkg/core"
 // julianRecord keeps a Julian Wikidata time as written: a GEDCOM-DATE Value
 // (gedcomString) checked by gedcom-go (gedcomValid). The Gregorian value of
 // the same day or period is not written yet: how a TRIPLE carries both
-// values is open (docs/value/time/GEDCOM-DATE.md).
+// values is open.
 func julianRecord(t wikidataTime) (core.Record, string) {
 	s, reason := gedcomString(t)
 	if reason != "" {
