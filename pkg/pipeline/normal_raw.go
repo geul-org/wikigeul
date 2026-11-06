@@ -6,8 +6,8 @@ package pipeline
 import "strings"
 
 // normalRaw lists the raw (original text) reasons a strict run lets pass.
-// The validated runs (files/wikidata full-validation-2026-10-29,
-// pack-mode-2026-10-30) met a coordinate precision no unit gives back, a
+// The validated runs (full validation 2026-10-29, pack mode 2026-10-30)
+// met a coordinate precision no unit gives back, a
 // time with a timezone or bounds, a time precision coarser than a decade
 // (0–5, 천년, 세기; and 10년 for Julian dates) that EDTF or GEDCOM has no
 // form for, a BCE or 5+ digit decade, a Y-prefixed year go-edtf cannot

@@ -3,8 +3,8 @@
 package port
 
 // wikibaseType maps a Wikidata property datatype to its class in the Wikibase
-// RDF ontology (http://wikiba.se/ontology#…, files/geul/
-// wikidata-datatype-mapping.md): the 18 datatypes of Special:ListDatatypes.
+// RDF ontology (http://wikiba.se/ontology#…): the 18 datatypes of
+// Special:ListDatatypes.
 func wikibaseType(datatype string) (string, bool) {
 	switch datatype {
 	case "wikibase-item":

@@ -3,8 +3,8 @@
 package port
 
 // originProperties are the Wikidata reference properties that say something
-// about the cited work itself (README 출처, files/geul/proposals/record-source.md
-// 속성 분류): its address, title, authors, publication, publisher, language,
+// about the cited work itself (README 출처):
+// its address, title, authors, publication, publisher, language,
 // and P248 (stated in) when the source is a LOCAL node. A reference snak of
 // any other property (P813 retrieved, P143 imported from, P887, P4656, page,
 // section, external identifiers, archive URL …) is about the act of citing

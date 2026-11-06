@@ -9,8 +9,8 @@ import (
 	"github.com/geul-org/wikigeul/pkg/source"
 )
 
-// stringRecord converts a string datavalue by the property's datatype
-// (files/geul/wikidata-datatype-mapping.md): url to a URI (urlRecord),
+// stringRecord converts a string datavalue by the property's datatype: url
+// to a URI (urlRecord),
 // commonsMedia to its Commons file page and geo-shape or tabular-data to its
 // Commons Data page (commonsURI), and string, external-id, math,
 // musical-notation and any other to UTF8-TEXT. A value that is not UTF-8 is

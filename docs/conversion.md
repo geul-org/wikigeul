@@ -30,7 +30,7 @@
 - **문서와 목록:** 문서는 버전 1, 목록은 `resolve.FirstVersionList`(디렉터리 모드 Overwrite와 같은 바이트, RECORDED-AT만 `-recorded-at` 또는 실행 시작 시각으로 고정)다. 주소는 `0x00000001/docs/<문서 ID>/0x00000001.geul`과 `…/versions.geul`이고, 둘 다 `0x00000001/hashes/<내용 해시>.geul`로도 읽힌다(사본 없음). Edge Id는 새 세트라 1부터다(디렉터리 모드에서 처음 공표하는 문서와 같다).
 - **TRANSFORMED-BY:** 모든 문서가 실행의 첫 문서와 같은 TRANSFORMED-BY(같은 wikigeul·gogeul 커밋)인지 쓰기 전에 확인한다.
 - **사전:** 실행의 첫 Q 문서 `-samples`(2048)개로 zstd 사전을 결정적으로 학습한다.
-- **이름 색인:** 쓰지 않는다. 1.2억 이름이면 약 4 GB 문서 하나라 받을 수 없고, 이름은 문서 ID에서 정해진다(geul-dev `files/pack/README.md` §6.1, O6).
+- **이름 색인:** 쓰지 않는다. 1.2억 이름이면 약 4 GB 문서 하나라 받을 수 없고, 이름은 문서 ID에서 정해진다.
 - **체크포인트·재개:** `-checkpoint`(100,000)문서마다 보고서를 fsync하고 pack 스트림을 체크포인트한다. 진행(마지막 개체, 문서 수, 보고서 길이)과 실행의 정체(커밋, 레지스트리 판, 덤프, 범위·목록 해시, RECORDED-AT)를 같은 원자 저장에 담는다. `-resume`은 같은 실행일 때만 이어 쓰고 보고서를 체크포인트 길이로 자른다.
 - **엄격 모드(`-strict`):** 처음 보는 것을 건너뛰고 계속 가지 않는다. 결과를 쓰기 전에 이상점을 찾고, 첫 이상 개체에서 그 앞까지 체크포인트한 뒤 이상점 보고서(`-anomaly`, TSV: 개체, 종류, 속성, 값 원문, 사유, 분류)를 쓰고 종료 코드 3으로 멈춘다. 정상(허용) 목록은 다음뿐이고 그 밖은 모두 이상점이다(`cmd/wikigeul` `normalReason`·`normalRaw`).
   - 건너뜀: Lexeme(`개체: L`, form·sense 포함)·EntitySchema(`개체: E`) 값. 본 값·qualifier·출처 모두.
