@@ -1,15 +1,24 @@
 wikigeul
 
-Scope of CC0
-------------
-The GEUL project's own work in this repository — code, documentation, data and
-other material we created — is dedicated to the public domain under CC0 1.0
-Universal. LICENSE holds the CC0 1.0 legal text verbatim (unmodified, so that
-it is recognised as CC0-1.0); this section states what it covers.
+License scope
+-------------
+Code in this repository is licensed under the MIT License (LICENSE).
 
-CC0 covers only our own work. Third-party material keeps its own license and is
-not covered by CC0: Go modules such as klauspost/compress and sfomuseum/go-edtf
-(BSD-3-Clause). Each component is listed below with its license.
+CC0 data and documents in this repository:
+  - README.md and docs/
+  - testdata/ (test data; wikidata-languages.txt comes from the Wikidata
+    wbcontentlanguages API, CC0)
+  - the GEUL documents wikigeul writes from Wikidata (Wikidata itself is CC0)
+
+Data and documents that the GEUL project produced are dedicated to the public
+domain under CC0 1.0 Universal
+(https://creativecommons.org/publicdomain/zero/1.0/legalcode). No separate
+CC0 text file is kept here; the legal code at that address applies.
+
+Versions released before 2026-11-14 under CC0 remain CC0.
+
+Third-party material keeps its own license and is covered by neither MIT nor
+CC0 above: Go modules such as klauspost/compress and sfomuseum/go-edtf (BSD-3-Clause). Each component is listed below with its license.
 
 ================================================================================
 This product includes software developed by third parties.
@@ -43,7 +52,7 @@ wikigeul binary:
     Copyright:   Copyright (c) 2025 Chris Clonch
     URL:         https://github.com/cacack/gedcom-go
 
-It also uses, from the same project (CC0): the GEUL library
+It also uses, from the same project (MIT): the GEUL library
 github.com/geul-org/gogeul (the pkg/... packages it uses: core, codecspec,
 delta, inspect, pack, resolve, schema and toulmin).
 

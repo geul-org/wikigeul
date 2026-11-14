@@ -98,4 +98,4 @@ go build ./... && go vet ./... && go test ./...
 
 ## License
 
-Our own work in this repository is dedicated to the public domain under [CC0 1.0](LICENSE). Third-party components keep their own licenses; see [NOTICE](NOTICE). Wikidata content and the documents produced from it are CC0.
+The code in this repository is under the [MIT License](LICENSE). Data and documents we produced are CC0 1.0 (see [NOTICE](NOTICE)). Third-party components keep their own licenses; see [NOTICE](NOTICE). Wikidata content and the documents produced from it are CC0.
